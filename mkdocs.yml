@@ -1,0 +1,49 @@
+# yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
+
+site_name: distribution-algebra
+
+repo_url: https://github.com/vaibhavkarve/distribution-algebra
+repo_name: vaibhavkarve/distribution-algebra
+
+theme:
+  name: material
+  features:
+    - navigation.expand
+    - navigation.top
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+- search
+- mkdocstrings
+- git-revision-date-localized:
+    enable_creation_date: false
+
+markdown_extensions:
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+
+nav:
+    - Home: 'index.md'
+    - API Reference:
+        - distribution_algebra.distribution: 'distribution.md'
+        - distribution_algebra.beta: 'beta.md'
+        - distribution_algebra.normal: 'normal.md'
+        - distribution_algebra.lognormal: 'lognormal.md'
+        - distribution_algebra.distribution: 'distribution.md'
+
+extra:
+  social:
+    - icon: fontawesome/solid/globe
+      link: https://vaibhavkarve.github.io/
+      name: Vaibhav's Website
+    - icon: fontawesome/brands/github
+      link: https://github.com/vaibhavkarve
+      name: Vaibhav's GitHub
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/vaibhav-karve/
+      name: Vaibhav's LinkedIn
+
+copyright: Copyright &copy; 2023 Vaibhav Karve
