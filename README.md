@@ -17,7 +17,8 @@ Additional features include:
   - The sum of two arbitrary univariate distributions is expressed as a Vectorized distribution.
 
 
-![Example plot](https://github.com/vaibhavkarve/distribution-algebra/blob/main/docs/example_plot_univariate.png)
+![Example plot](https://github.com/vaibhavkarve/distribution-algebra/raw/main/docs/example_plot_univariate.png)
+
 
 This package is written in Python v3.10, and is publicly available
 under the [GNU-GPL-v3.0
