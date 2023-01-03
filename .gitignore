@@ -1,0 +1,5 @@
+typings
+.venv
+*~
+.coverage
+.hypothesis
