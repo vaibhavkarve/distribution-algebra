@@ -1,0 +1,73 @@
+[tool.poetry]
+name = "distribution_algebra"
+version = "0.1.0"
+description = " A python package that implements an easy-to-use interface to random variables, statistical distributions, and their algebra."
+authors = ["Vaibhav Karve <vkarve@protonmail.com>"]
+packages = [
+    { include = "distribution_algebra" },
+    { include = "tests" }
+]
+
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.11"
+wheel = ">=0.38.1"
+numpy = "^1.24.0"
+matplotlib = "^3.6.2"
+scipy = "^1.9.3"
+pydantic = "^1.10.4"
+loguru = "^0.6.0"
+
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^0.991"
+pytest = "^7.2.0"
+hypothesis = "^6.61.0"
+isort = "^5.11.4"
+nptyping = {extras = ["complete"], version = "^2.4.1"}
+safety = "^2.3.5"
+py2puml = "^0.6.0"
+pytest-cov = "^4.0.0"
+mkdocs = "^1.4.2"
+mkdocs-material = "^9.0.0"
+mkdocs-git-revision-date-localized-plugin = "^1.1.0"
+mkdocstrings = {version = ">=0.18", extras = ["python"]}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+python_version = "3.10"
+explicit_package_bases = true
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+exclude = []
+disable_error_code = ["valid-type"]
+files = ["distribution_algebra", "tests"]
+
+[[tool.mypy.overrides]]
+module = [
+    "numpy",
+    "scipy",
+    "matplotlib.*",
+]
+ignore_missing_imports = true
+
+
+[tool.pyright]
+include = [
+  "./distribution_algebra/*.py",
+  "./tests/*.py"
+]
+pythonVersion = "3.10"
+stubPath = "./typings"
+reportMissingTypeStubs = true
+reportMissingImports = true
+typeCheckingMode = "strict"
+venvPath = ".venv"
+reportUnknownMemberType = false
+executionEnvironments = [
+  { root = "." }
+]
