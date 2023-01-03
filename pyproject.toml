@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "distribution_algebra"
-version = "0.1.0"
+version = "0.1.1"
 description = " A python package that implements an easy-to-use interface to random variables, statistical distributions, and their algebra."
 authors = ["Vaibhav Karve <vkarve@protonmail.com>"]
 packages = [
