@@ -3,12 +3,10 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from math import isclose
-from typing import Annotated, Any, Generic, TypeVar, cast
+from typing import Any, Generic, TypeVar
 
 import numpy as np
-from attr import frozen
 from numpy.typing import NDArray
-from pydantic import confloat, validator
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 
 from distribution_algebra.config import ABS_TOL, SAMPLE_SIZE
@@ -19,6 +17,32 @@ T_in = TypeVar("T_in", np.float64, np.int_)
 @dataclass
 class VectorizedDistribution(Generic[T_in]):
     sample: NDArray[T_in]
+
+    @property
+    def mean(self) -> np.float64:
+        return self.sample.mean()
+
+    @property
+    def var(self) -> np.float64:
+        return self.sample.var()
+
+    def __add__(self, other: Any) -> Any:
+        match other:
+            case VectorizedDistribution():
+                return VectorizedDistribution(sample=self.sample + other.sample)
+            case UnivariateDistribution():
+                return VectorizedDistribution(sample=self.sample + other.to_vectorized().sample)
+            case _:
+                return NotImplemented
+
+    def __mul__(self, other: Any) -> Any:
+        match other:
+            case VectorizedDistribution():
+                return VectorizedDistribution(sample=self.sample * other.sample)
+            case UnivariateDistribution():
+                return VectorizedDistribution(sample=self.sample * other.to_vectorized().sample)
+            case _:
+                return NotImplemented
 
 
 @pydantic_dataclass(frozen=True, kw_only=True, eq=True)
@@ -49,6 +73,9 @@ class UnivariateDistribution(ABC, Generic[T_in]):
             case UnivariateDistribution():
                 return VectorizedDistribution(sample=self.to_vectorized().sample
                                               + other.to_vectorized().sample)
+            case VectorizedDistribution():
+                return VectorizedDistribution(sample=self.to_vectorized().sample
+                                              + other.sample)
             case _:
                 return NotImplemented
 
@@ -57,6 +84,9 @@ class UnivariateDistribution(ABC, Generic[T_in]):
             case UnivariateDistribution():
                 return VectorizedDistribution(sample=self.to_vectorized().sample
                                               * other.to_vectorized().sample)
+            case VectorizedDistribution():
+                return VectorizedDistribution(sample=self.to_vectorized().sample
+                                              * other.sample)
             case _:
                 return NotImplemented
 
