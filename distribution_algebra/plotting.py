@@ -25,14 +25,16 @@ def plot(*_: Any, ax=None, **kwargs: Any) -> Any:  # pyright: ignore
 
 @plot.register(UnivariateDistribution)
 def plot_univariate_distribution(
-        udist: UnivariateDistribution[T_in], ax=None, **kwargs: Any) -> list[Line2D]:
+        udist: UnivariateDistribution[T_in],
+        ax: None | plt.Axes = None,
+        **kwargs: Any) -> list[Line2D]:
     ax = ax or plt.gca()
     plot_vectorized_distribution(udist.to_vectorized(), ax=ax, **kwargs)
-    if hasattr(udist, "_discrete"):
-        arange: NDArray[np.int_] = np.arange(
+    if not udist.is_continuous:
+        arange: NDArray[np.float64] = np.arange(
             start=max(udist.support[0], SUPPORT_MIN),
             stop=min(udist.support[1], SUPPORT_MAX))
-        return ax.plot(arange, udist.pdf(arange), color="r")  # type: ignore
+        return ax.plot(arange, udist.pdf(arange), "o", color="r")  # type: ignore
     linspace: NDArray[np.float64] = np.linspace(
         start=max(udist.support[0], SUPPORT_MIN),
         stop=min(udist.support[1], SUPPORT_MAX),
@@ -45,17 +47,18 @@ def plot_vectorized_distribution(
         vdist: VectorizedDistribution[T_in], ax = None, **kwargs: Any) \
         -> tuple[NDArray[np.float64], NDArray[np.float64], list[Polygon]]:
     ax = ax or plt.gca()
-    if hasattr(vdist, "_discrete"):
-        return ax.hist(vdist.sample, bins=100, alpha=0.25, density=False, **kwargs)  # type: ignore
-    return ax.hist(vdist.sample, bins=100, alpha=0.25, density=True, **kwargs)  # type: ignore
+    number_of_bins: int = min(len(set(vdist.sample)), 100)
+    return ax.hist(vdist.sample, bins=number_of_bins, alpha=0.25, density=True,
+                   align="left", **kwargs)  # type: ignore
 
 @logger.catch
 def plot_all_distributions() -> None:
     plt.xkcd()
-    fig, axes = plt.subplots(2, 2)
+    axes: tuple[tuple[plt.Axes, ...], ...]
+    _, axes = plt.subplots(2, 2)
 
     # Normal distributions.
-    ax = axes[0][0]
+    ax: plt.Axes = axes[0][0]
     a: Normal = Normal(mean=-5.0, var=9.0)
     b: Normal = Normal(mean=1.0, var=4.0)
     plot(a, ax=ax, label=f"{a}")
@@ -78,7 +81,7 @@ def plot_all_distributions() -> None:
 
     # Poisson distributions.
     ax = axes[1][1]
-    p1: Poisson = Poisson(lam=5)
+    p1: Poisson = Poisson(lam=4)
     plot(p1, ax=ax, label=f"{p1}")
     ax.legend()
 
