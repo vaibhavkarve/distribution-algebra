@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 from math import isclose
 from typing import Any, Generic, TypeVar
+from dataclasses import field, dataclass
 
 import numpy as np
 from numpy.typing import NDArray
@@ -14,7 +14,9 @@ from distribution_algebra.config import ABS_TOL, SAMPLE_SIZE
 T_in = TypeVar("T_in", np.float64, np.int_)
 
 
-@dataclass
+# Note: Not using `pydantic_dataclass` because it does not support
+# NDArray validation.
+@dataclass(frozen=True, kw_only=True, eq=False)
 class VectorizedDistribution(Generic[T_in]):
     sample: NDArray[T_in]
 
@@ -47,6 +49,8 @@ class VectorizedDistribution(Generic[T_in]):
 
 @pydantic_dataclass(frozen=True, kw_only=True, eq=True)
 class UnivariateDistribution(ABC, Generic[T_in]):
+    is_continuous: bool = field(default=True, repr=False)
+
     @property
     @abstractmethod
     def median(self) -> float: ...
@@ -66,7 +70,7 @@ class UnivariateDistribution(ABC, Generic[T_in]):
         return VectorizedDistribution(sample=self.draw(size=SAMPLE_SIZE))
 
     @abstractmethod
-    def pdf(self, linspace: NDArray[np.float64]) -> NDArray[np.float64]: ...
+    def pdf(self, linspace: NDArray[np.float64] | NDArray[np.int_]) -> NDArray[np.float64]: ...
 
     def __add__(self, other: Any) -> Any:
         match other:
