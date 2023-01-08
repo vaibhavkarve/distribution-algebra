@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-
-
+from dataclasses import field
 from math import floor, inf
 from typing import Annotated, Any
 
@@ -17,7 +16,7 @@ from distribution_algebra.distribution import UnivariateDistribution
 @dataclass(frozen=True, kw_only=True, eq=True)
 class Poisson(UnivariateDistribution[np.int_]):
     lam: Annotated[float, confloat(gt=0.0, allow_inf_nan=False)]  # rate parameter.
-    _discrete: bool = True
+    is_continuous: bool = field(default=False, repr=False)
 
     def draw(self, size: int) -> NDArray[np.int_]:
         return RNG.poisson(lam=self.lam, size=size)
@@ -42,7 +41,7 @@ class Poisson(UnivariateDistribution[np.int_]):
 
     def pdf(self, arange: NDArray[np.int_]) -> NDArray[np.float64]:
         return scipy.stats.poisson.pmf(  # pyright: ignore[reportUnknownVariableType]
-            arange, self.lam)
+            arange, mu=self.lam)
 
     def __add__(self, other: Any) -> Any:
         match other:

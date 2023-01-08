@@ -5,17 +5,18 @@ from typing import Any
 
 import matplotlib.pyplot as plt
 import numpy as np
-from distribution_algebra.beta import Beta
-from distribution_algebra.config import SAMPLE_SIZE, SUPPORT_MAX, SUPPORT_MIN
-from distribution_algebra.distribution import (T_in, UnivariateDistribution,
-                                       VectorizedDistribution)
-from distribution_algebra.lognormal import Lognormal
-from distribution_algebra.normal import Normal
-from distribution_algebra.poisson import Poisson
 from loguru import logger
 from matplotlib.lines import Line2D
 from matplotlib.patches import Polygon
 from numpy.typing import NDArray
+
+from distribution_algebra.beta import Beta
+from distribution_algebra.config import SAMPLE_SIZE, SUPPORT_MAX, SUPPORT_MIN
+from distribution_algebra.distribution import (T_in, UnivariateDistribution,
+                                               VectorizedDistribution)
+from distribution_algebra.lognormal import Lognormal
+from distribution_algebra.normal import Normal
+from distribution_algebra.poisson import Poisson
 
 
 @singledispatch

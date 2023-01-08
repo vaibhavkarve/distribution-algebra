@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
 from math import isclose
 from typing import Any, Generic, TypeVar
-from dataclasses import field, dataclass
 
 import numpy as np
 from numpy.typing import NDArray

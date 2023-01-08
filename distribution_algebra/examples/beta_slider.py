@@ -2,8 +2,9 @@
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-from distribution_algebra.beta import Beta
 from matplotlib.widgets import Button, Slider
+
+from distribution_algebra.beta import Beta
 
 matplotlib.rcParams['font.size'] = 14
 
