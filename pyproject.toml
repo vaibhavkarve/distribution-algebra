@@ -47,6 +47,7 @@ mkdocs = "^1.4.2"
 mkdocs-material = "^9.0.0"
 mkdocs-git-revision-date-localized-plugin = "^1.1.0"
 mkdocstrings = {version = ">=0.18", extras = ["python"]}
+pyright = ">1.1.286"
 
 [build-system]
 requires = ["poetry-core"]
