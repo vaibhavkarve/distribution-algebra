@@ -19,6 +19,7 @@ T_in = TypeVar("T_in", np.float64, np.int_)
 @dataclass(frozen=True, kw_only=True, eq=False)
 class VectorizedDistribution(Generic[T_in]):
     sample: NDArray[T_in]
+    is_continuous: bool = field(default=True, repr=False)
 
     @property
     def mean(self) -> np.float64:
@@ -67,7 +68,8 @@ class UnivariateDistribution(ABC, Generic[T_in]):
     def draw(self, size: int) -> NDArray[T_in]: ...
 
     def to_vectorized(self) -> VectorizedDistribution[T_in]:
-        return VectorizedDistribution(sample=self.draw(size=SAMPLE_SIZE))
+        return VectorizedDistribution(sample=self.draw(size=SAMPLE_SIZE),
+                                      is_continuous=self.is_continuous)
 
     @abstractmethod
     def pdf(self, linspace: NDArray[np.float64] | NDArray[np.int_]) -> NDArray[np.float64]: ...
