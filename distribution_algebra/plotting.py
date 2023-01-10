@@ -3,6 +3,7 @@
 from collections import Counter as counter
 from functools import singledispatch
 from typing import Any, Counter
+from textwrap import wrap
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -18,6 +19,7 @@ from distribution_algebra.distribution import (T_in, UnivariateDistribution,
 from distribution_algebra.lognormal import Lognormal
 from distribution_algebra.normal import Normal
 from distribution_algebra.poisson import Poisson
+from distribution_algebra.beta4 import Beta4
 
 
 @singledispatch
@@ -56,16 +58,14 @@ def plot_vectorized_distribution(
             list(sample_counter.values()), dtype=np.float64) / len(vdist.sample)
         return ax.bar(x, heights, alpha=0.25, align="center", width=0.2, **kwargs) # type: ignore
 
-
-    number_of_bins: int = min(len(set(vdist.sample)), 100)
-    return ax.hist(vdist.sample, bins=number_of_bins, alpha=0.25, density=True,
+    return ax.hist(vdist.sample, bins=100, alpha=0.25, density=True,
                    align="left", **kwargs)  # type: ignore
 
 
 def plot_all_distributions() -> None:
     plt.xkcd()
     axes: tuple[tuple[plt.Axes, ...], ...]
-    _, axes = plt.subplots(2, 2)
+    _, axes = plt.subplots(2, 3)
 
     # Normal distributions.
     ax: plt.Axes = axes[0][0]
@@ -84,7 +84,7 @@ def plot_all_distributions() -> None:
     ax.legend()
 
     # Beta distributions.
-    ax = axes[1][0]
+    ax = axes[0][2]
     b1: Beta = Beta(alpha=1, beta=1)
     b2: Beta = Beta(alpha=9, beta=3)
     plot(b1, ax=ax, label=f"{b1}")
@@ -93,12 +93,20 @@ def plot_all_distributions() -> None:
     ax.legend()
 
     # Poisson distributions.
-    ax = axes[1][1]
+    ax = axes[1][0]
     ax.set_xticks(range(20))
     p1: Poisson = Poisson(lam=4)
     p1_plot = plot(p1, ax=ax, label=f"{p1}")
     p1_plot[0].set_label("Prob. mass func.")
     ax.legend()
+
+    # Beta4 distributions.
+    ax = axes[1][1]
+    b41: Beta4 = Beta4(alpha=9, beta=3, minimum=5, maximum=8)
+    b41_plot = plot(b41, ax=ax, label="\n".join(wrap(f"{b41}", width=30)))
+    b41_plot[0].set_label("Prob. density func.")
+    ax.legend()
+
 
     plt.suptitle("Plotting various univariate random distributions.")
     plt.show()

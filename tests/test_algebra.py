@@ -4,6 +4,7 @@ from random import random
 from typing import TypeAlias
 
 import numpy as np
+from numpy.random import beta
 import pytest
 from hypothesis import given
 from hypothesis import strategies as st
@@ -15,6 +16,7 @@ from distribution_algebra.distribution import (UnivariateDistribution,
 from distribution_algebra.lognormal import Lognormal
 from distribution_algebra.normal import Normal
 from distribution_algebra.poisson import Poisson
+from distribution_algebra.beta4 import Beta4
 
 
 @given(st.data())
@@ -36,6 +38,9 @@ def test_operations(data: st.DataObject) -> None:
     assert a * b == Lognormal.from_normal_mean_var(a.normal_mean + b.normal_mean,
                                                    a.normal_var + b.normal_var)
 
+    # 1 - Beta(α, β) ~ Beta(β, α)
+    #c: Beta = data.draw(st.from_type(Beta))
+    #assert 1 - c == Beta(alpha=c.beta, beta=c.alpha)
 
 UnivariateUnion: TypeAlias = \
     UnivariateDistribution[np.float64] | UnivariateDistribution[np.int_]
@@ -48,14 +53,16 @@ DistributionUnion: TypeAlias = UnivariateUnion | VectorizedUnion
                                    Lognormal(mean=random(), var=random()),
                                    Beta(alpha=random(), beta=random()),
                                    Poisson(lam=random()),
+                                   Beta4(alpha=random(), beta=random(), minimum=random(), maximum=random() + 1),
                                    VectorizedDistribution(sample=np.random.random(SAMPLE_SIZE))],
-                         ids=["Normal", "Lognormal", "Beta", "Poisson", "Vectorized"])
+                         ids=["Normal", "Lognormal", "Beta", "Poisson", "Beta4", "Vectorized"])
 @pytest.mark.parametrize("dist2", [Normal(mean=random(), var=random()),
                                    Lognormal(mean=random(), var=random()),
                                    Beta(alpha=random(), beta=random()),
                                    Poisson(lam=random()),
+                                   Beta4(alpha=random(), beta=random(), minimum=random(), maximum=random() + 1),
                                    VectorizedDistribution(sample=np.random.random(SAMPLE_SIZE))],
-                         ids=["Normal", "Lognormal", "Beta", "Poisson", "Vectorized"])
+                         ids=["Normal", "Lognormal", "Beta", "Poisson", "Beta4", "Vectorized"])
 def test_all_pairwise_combinations(dist1: DistributionUnion, dist2: DistributionUnion) -> None:
     addition: UnivariateUnion | VectorizedUnion = dist1 + dist2
     multiplication: UnivariateUnion | VectorizedUnion = dist1 * dist2
