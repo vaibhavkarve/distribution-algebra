@@ -47,7 +47,7 @@ mkdocs = "^1.4.2"
 mkdocs-material = "^9.0.0"
 mkdocs-git-revision-date-localized-plugin = "^1.1.0"
 mkdocstrings = {version = ">=0.18", extras = ["python"]}
-pyright = ">1.1.286"
+pyright = ">=1.1.289"
 
 [build-system]
 requires = ["poetry-core"]
@@ -60,8 +60,22 @@ strict = true
 warn_return_any = true
 warn_unused_configs = true
 exclude = []
-disable_error_code = ["valid-type"]
+disable_error_code = ["valid-type", "abstract", "type-abstract"]
 files = ["distribution_algebra", "tests"]
+warn_unused_ignores = false
+plugins = ["pydantic.mypy"]
+follow_imports = "silent"
+warn_redundant_casts = true
+disallow_any_generics = true
+check_untyped_defs = true
+no_implicit_reexport = true
+disallow_untyped_defs = true
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+warn_untyped_fields = true
 
 [[tool.mypy.overrides]]
 module = [
@@ -86,4 +100,9 @@ venvPath = ".venv"
 reportUnknownMemberType = false
 executionEnvironments = [
   { root = "." }
+]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "error"
 ]

@@ -2,12 +2,11 @@
 
 from collections import Counter as counter
 from functools import singledispatch
-from typing import Any, Counter
+from typing import Any
 from textwrap import wrap
 
 import matplotlib.pyplot as plt
 import numpy as np
-from loguru import logger
 from matplotlib.lines import Line2D
 from matplotlib.patches import Polygon
 from numpy.typing import NDArray
@@ -23,13 +22,13 @@ from distribution_algebra.beta4 import Beta4
 
 
 @singledispatch
-def plot(*_: Any, ax=None, **kwargs: Any) -> Any:  # pyright: ignore
+def plot(*_: Any, ax: None | plt.axes.Axes=None, **kwargs: Any) -> Any:  # pyright: ignore
     raise NotImplementedError
 
 @plot.register(UnivariateDistribution)
 def plot_univariate_distribution(
         udist: UnivariateDistribution[T_in],
-        ax: None | plt.Axes = None,
+        ax: None | plt.axes.Axes = None,  # type: ignore
         **kwargs: Any) -> list[Line2D]:
     ax = ax or plt.gca()
     plot_vectorized_distribution(udist.to_vectorized(), ax=ax, **kwargs)
@@ -47,9 +46,11 @@ def plot_univariate_distribution(
 
 @plot.register(VectorizedDistribution)
 def plot_vectorized_distribution(
-        vdist: VectorizedDistribution[T_in], ax = None, **kwargs: Any) \
-        -> tuple[NDArray[np.float64], NDArray[np.float64], list[Polygon]]:
+        vdist: VectorizedDistribution[T_in],
+        ax: None | plt.axes.Axes = None,  # type: ignore
+        **kwargs: Any) -> tuple[NDArray[np.float64], NDArray[np.float64], list[Polygon]]:
     ax = ax or plt.gca()
+    assert ax is not None
 
     if not vdist.is_continuous:
         sample_counter: counter[T_in] = counter(vdist.sample)
@@ -58,17 +59,18 @@ def plot_vectorized_distribution(
             list(sample_counter.values()), dtype=np.float64) / len(vdist.sample)
         return ax.bar(x, heights, alpha=0.25, align="center", width=0.2, **kwargs) # type: ignore
 
-    return ax.hist(vdist.sample, bins=100, alpha=0.25, density=True,
-                   align="left", **kwargs)  # type: ignore
+    return ax.hist(vdist.sample, bins=100, alpha=0.25, density=True,  # type: ignore
+                   align="left", **kwargs)
 
 
 def plot_all_distributions() -> None:
     plt.xkcd()
-    axes: tuple[tuple[plt.Axes, ...], ...]
+    _: plt.figure.Figure  # type: ignore
+    axes: tuple[tuple[plt.axes.Axes, ...], ...]  # type: ignore
     _, axes = plt.subplots(2, 3)
 
     # Normal distributions.
-    ax: plt.Axes = axes[0][0]
+    ax: plt.axes.Axes = axes[0][0]  # type: ignore
     a: Normal = Normal(mean=-5.0, var=9.0)
     b: Normal = Normal(mean=1.0, var=4.0)
     plot(a, ax=ax, label=f"{a}")

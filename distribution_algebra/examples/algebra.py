@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 
-import matplotlib.pyplot as plt
 
 from distribution_algebra.lognormal import Lognormal
 from distribution_algebra.normal import Normal
-from distribution_algebra.plotting import plot
 
 
 def example_addition() -> None:

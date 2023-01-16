@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+
+from typing import cast
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,8 +15,8 @@ INIT_ALPHA = 1
 INIT_BETA = 1
 
 # Create the figure and the line that we will manipulate
-fig: plt.Figure
-ax: plt.Axes
+fig: plt.figure.Figure  # type: ignore
+ax: plt.axes.Axes  # type: ignore
 fig, ax = plt.subplots()
 line, = ax.plot(LINX, Beta(alpha=INIT_ALPHA, beta=INIT_BETA).pdf(LINX), lw=3)
 ax.set_ylim(0, 4)
@@ -50,8 +52,9 @@ amp_slider = Slider(
 
 
 # The function to be called anytime a slider's value changes
-def update(val):
-    line.set_ydata(Beta(alpha=amp_slider.val, beta=freq_slider.val).pdf(LINX))
+def update(_: None) -> None:
+    line.set_ydata(Beta(alpha=cast(float, amp_slider.val),  # type: ignore
+                        beta=cast(float, freq_slider.val)).pdf(LINX))  # type: ignore
     fig.canvas.draw_idle()
 
 
@@ -64,7 +67,7 @@ resetax = fig.add_axes([0.8, 0.025, 0.1, 0.04])
 button = Button(resetax, 'Reset', hovercolor='0.975')
 
 
-def reset(event):
+def reset(_: None) -> None:
     freq_slider.reset()
     amp_slider.reset()
 button.on_clicked(reset)

@@ -7,13 +7,13 @@ import numpy as np
 import scipy
 from numpy.typing import NDArray
 from pydantic import confloat
-from pydantic.dataclasses import dataclass
+from pydantic.dataclasses import dataclass as pydantic_dataclass
 
 from distribution_algebra.config import RNG
 from distribution_algebra.distribution import UnivariateDistribution
 
 
-@dataclass(frozen=True, kw_only=True, eq=True)
+@pydantic_dataclass(frozen=True, kw_only=True, eq=True)
 class Poisson(UnivariateDistribution[np.int_]):
     lam: Annotated[float, confloat(gt=0.0, allow_inf_nan=False)]  # rate parameter.
     is_continuous: bool = field(default=False, repr=False)
@@ -39,8 +39,8 @@ class Poisson(UnivariateDistribution[np.int_]):
             return floor(self.lam)
         return NotImplemented
 
-    def pdf(self, arange: NDArray[np.int_]) -> NDArray[np.float64]:
-        return scipy.stats.poisson.pmf(  # pyright: ignore[reportUnknownVariableType]
+    def pdf(self, arange: NDArray[np.int_]) -> NDArray[np.float64]:  # type: ignore
+        return scipy.stats.poisson.pmf(  # type: ignore
             arange, mu=self.lam)
 
     def __add__(self, other: Any) -> Any:

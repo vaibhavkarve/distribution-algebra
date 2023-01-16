@@ -6,15 +6,14 @@ import numpy as np
 import scipy
 from numpy.typing import NDArray
 from pydantic import confloat
-from pydantic.dataclasses import dataclass
+from pydantic.dataclasses import dataclass as pydantic_dataclass
 from typing_extensions import Self
 
-from distribution_algebra.config import RNG, SAMPLE_SIZE
-from distribution_algebra.distribution import (UnivariateDistribution,
-                                               VectorizedDistribution)
+from distribution_algebra.config import RNG
+from distribution_algebra.distribution import UnivariateDistribution
 
 
-@dataclass(frozen=True, kw_only=True, eq=False)
+@pydantic_dataclass(frozen=True, kw_only=True, eq=False)
 class Normal(UnivariateDistribution[np.float64]):
     mean: Annotated[float, confloat(allow_inf_nan=False)]
     var: Annotated[float, confloat(gt=0.0, allow_inf_nan=False)]
@@ -23,21 +22,44 @@ class Normal(UnivariateDistribution[np.float64]):
         return RNG.normal(
             loc=self.mean, scale=sqrt(self.var), size=size)
 
-    def pdf(self, linspace: NDArray[np.float64]) -> NDArray[np.float64]:
+    def pdf(self, linspace: NDArray[np.float64]) -> NDArray[np.float64]:  # type: ignore
         return cast(NDArray[np.float64], scipy.stats.norm.pdf(  # pyright: ignore[reportUnknownVariableType]
             linspace, loc=self.mean, scale=sqrt(self.var)))
 
-    def __rmul__(self, other: float) -> Self:
-        return Normal(mean=self.mean, var=self.var * other**2)
-
-    def __add__(self, other: Any) -> Self:
+    def __add__(self, other: Any) -> Any:
         match other:
-            case int() | float():
-                return Normal(mean=self.mean + other, var=self.var)
             case Normal():
                 return Normal(mean=self.mean + other.mean, var=self.var + other.var)
+            case int() | float():
+                return Normal(mean=self.mean + other, var=self.var)
             case _:
                 return super().__add__(other)
+
+    def __mul__(self, other: Any) -> Any:
+        match other:
+            case int() | float():
+                return Normal(mean=self.mean * other, var=self.var * other**2)
+            case _:
+                return super().__mul__(other)
+
+    def __sub__(self, other: Any) -> Any:
+        match other:
+            case Normal():
+                return Normal(mean=self.mean - other.mean, var=self.var + other.var)
+            case int() | float():
+                return Normal(mean=self.mean - other, var=self.var)
+            case _:
+                return super().__sub__(other)
+
+    def __truediv__(self, other: Any) -> Any:
+        match other:
+            case int() | float():
+                return Normal(mean=self.mean / other, var=self.var / other**2)
+            case _:
+                return super().__truediv__(other)
+
+    def __neg__(self) -> Self:
+        return Normal(mean=-self.mean, var=self.var)
 
     @property
     def median(self) -> float:

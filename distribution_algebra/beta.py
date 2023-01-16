@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 
-from typing import Annotated
+from typing import Annotated, Any, cast
 
 import numpy as np
 import scipy
 from numpy.typing import NDArray
 from pydantic import confloat
-from pydantic.dataclasses import dataclass
+from pydantic.dataclasses import dataclass as pydantic_dataclass
 
 from distribution_algebra.config import RNG
 from distribution_algebra.distribution import UnivariateDistribution
 
 
-@dataclass(frozen=True, kw_only=True, eq=True)
+@pydantic_dataclass(frozen=True, kw_only=True, eq=True)
 class Beta(UnivariateDistribution[np.float64]):
     alpha: Annotated[float, confloat(gt=0, allow_inf_nan=False)]
     beta: Annotated[float, confloat(gt=0, allow_inf_nan=False)]
@@ -20,9 +20,9 @@ class Beta(UnivariateDistribution[np.float64]):
     def draw(self, size: int) -> NDArray[np.float64]:
         return RNG.beta(a=self.alpha, b=self.beta, size=size)
 
-    def pdf(self, linspace: NDArray[np.float64]) -> NDArray[np.float64]:
-        return scipy.stats.beta.pdf(  # pyright: ignore[reportUnknownVariableType]
-            x=linspace, a=self.alpha, b=self.beta)
+    def pdf(self, linspace: NDArray[np.float64]) -> NDArray[np.float64]:  # type: ignore
+        return cast(NDArray[np.float64], scipy.stats.beta.pdf(  # pyright: ignore[reportUnknownVariableType]
+            x=linspace, a=self.alpha, b=self.beta))
 
     @property
     def mean(self) -> float:
@@ -53,3 +53,10 @@ class Beta(UnivariateDistribution[np.float64]):
     @property
     def support(self) -> tuple[float, float]:
         return 0.0, 1.0
+
+    def __rsub__(self, other: Any) -> Any:
+        match other:
+            case 1:
+                return Beta(alpha=self.beta, beta=self.alpha)
+            case _:
+                return super().__rsub__(other)  # type: ignore

@@ -5,13 +5,13 @@ from typing import Annotated
 import numpy as np
 from numpy.typing import NDArray
 from pydantic import confloat, validator
-from pydantic.dataclasses import dataclass
+from pydantic.dataclasses import dataclass as pydantic_dataclass
 
 from distribution_algebra.distribution import UnivariateDistribution
 from distribution_algebra.beta import Beta
 
 
-@dataclass(frozen=True, kw_only=True, eq=True)
+@pydantic_dataclass(frozen=True, kw_only=True, eq=True)
 class Beta4(UnivariateDistribution[np.float64]):
     alpha: Annotated[float, confloat(gt=0, allow_inf_nan=False)]
     beta: Annotated[float, confloat(gt=0, allow_inf_nan=False)]
@@ -29,7 +29,7 @@ class Beta4(UnivariateDistribution[np.float64]):
     def draw(self, size: int) -> NDArray[np.float64]:
         return self.beta_of_alpha_beta().draw(size=size) * (self.maximum - self.minimum) + self.minimum
 
-    def pdf(self, linspace: NDArray[np.float64]) -> NDArray[np.float64]:
+    def pdf(self, linspace: NDArray[np.float64]) -> NDArray[np.float64]:  # type: ignore
         linspace = (linspace - self.minimum) / (self.maximum - self.minimum)
         return self.beta_of_alpha_beta().pdf(linspace) / (self.maximum - self.minimum)
 
