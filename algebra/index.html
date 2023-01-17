@@ -69,7 +69,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#algebrapy" class="md-skip">
+        <a href="#distribution_algebra.algebra" class="md-skip">
           Skip to content
         </a>
       
@@ -286,15 +286,77 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#algebrapy" class="md-nav__link">
-    algebra.py
+  <a href="#distribution_algebra.algebra" class="md-nav__link">
+    distribution_algebra.algebra
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#distribution_algebra.algebra" class="md-nav__link">
-    distribution_algebra.algebra
+  <a href="#distribution_algebra.algebra.Algebra" class="md-nav__link">
+    Algebra
+  </a>
+  
+    <nav class="md-nav" aria-label="Algebra">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#distribution_algebra.algebra.Algebra.__add__" class="md-nav__link">
+    __add__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#distribution_algebra.algebra.Algebra.__mul__" class="md-nav__link">
+    __mul__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#distribution_algebra.algebra.Algebra.__neg__" class="md-nav__link">
+    __neg__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#distribution_algebra.algebra.Algebra.__pow__" class="md-nav__link">
+    __pow__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#distribution_algebra.algebra.Algebra.__sub__" class="md-nav__link">
+    __sub__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#distribution_algebra.algebra.Algebra.__truediv__" class="md-nav__link">
+    __truediv__()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribution_algebra.algebra.Algebra_reverse_op" class="md-nav__link">
+    Algebra_reverse_op()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribution_algebra.algebra.define_right_operators_for_Algebra_class" class="md-nav__link">
+    define_right_operators_for_Algebra_class()
   </a>
   
 </li>
@@ -465,15 +527,77 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#algebrapy" class="md-nav__link">
-    algebra.py
+  <a href="#distribution_algebra.algebra" class="md-nav__link">
+    distribution_algebra.algebra
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#distribution_algebra.algebra" class="md-nav__link">
-    distribution_algebra.algebra
+  <a href="#distribution_algebra.algebra.Algebra" class="md-nav__link">
+    Algebra
+  </a>
+  
+    <nav class="md-nav" aria-label="Algebra">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#distribution_algebra.algebra.Algebra.__add__" class="md-nav__link">
+    __add__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#distribution_algebra.algebra.Algebra.__mul__" class="md-nav__link">
+    __mul__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#distribution_algebra.algebra.Algebra.__neg__" class="md-nav__link">
+    __neg__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#distribution_algebra.algebra.Algebra.__pow__" class="md-nav__link">
+    __pow__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#distribution_algebra.algebra.Algebra.__sub__" class="md-nav__link">
+    __sub__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#distribution_algebra.algebra.Algebra.__truediv__" class="md-nav__link">
+    __truediv__()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribution_algebra.algebra.Algebra_reverse_op" class="md-nav__link">
+    Algebra_reverse_op()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#distribution_algebra.algebra.define_right_operators_for_Algebra_class" class="md-nav__link">
+    define_right_operators_for_Algebra_class()
   </a>
   
 </li>
@@ -499,14 +623,17 @@
 
   <h1>algebra</h1>
 
-<h2 id="algebrapy">algebra.py</h2>
-
-
 <div class="doc doc-object doc-module">
 
 
 <a id="distribution_algebra.algebra"></a>
   <div class="doc doc-contents first">
+  
+      <p>This module defines the commutative algebra structure of probability distributions.</p>
+<p>We define an <code>Algebra</code> class for enforcing the requisite structure via
+abstract-method definitions for left-operators. Right-operators for
+each left-operator is added on via <code>setattr</code> on the Algebra class (see function
+<code>define_right_operators_for_Algebra_class</code>).</p>
 
   
 
@@ -519,6 +646,430 @@
 
 
 
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="distribution_algebra.algebra.Algebra" class="doc doc-heading">
+        <code>Algebra</code>
+
+
+</h2>
+
+
+  <div class="doc doc-contents ">
+
+  
+      <p>An abstract class for enforcing the definition of operations we care about.</p>
+<p>We specify left-operators as abstract methods in this class. Once
+the class is defined, we define the right-operators as being the
+swapped versions of their left-operators (see <code>Algebra_reverse_op</code>
+for details on how this is achieved).</p>
+
+<details class="note">
+  <summary>Note</summary>
+  <p>This class is for internal use only.</p>
+</details>
+
+        <details class="quote">
+          <summary>Source code in <code>distribution_algebra/algebra.py</code></summary>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-15">15</a></span>
+<span class="normal"><a href="#__codelineno-0-16">16</a></span>
+<span class="normal"><a href="#__codelineno-0-17">17</a></span>
+<span class="normal"><a href="#__codelineno-0-18">18</a></span>
+<span class="normal"><a href="#__codelineno-0-19">19</a></span>
+<span class="normal"><a href="#__codelineno-0-20">20</a></span>
+<span class="normal"><a href="#__codelineno-0-21">21</a></span>
+<span class="normal"><a href="#__codelineno-0-22">22</a></span>
+<span class="normal"><a href="#__codelineno-0-23">23</a></span>
+<span class="normal"><a href="#__codelineno-0-24">24</a></span>
+<span class="normal"><a href="#__codelineno-0-25">25</a></span>
+<span class="normal"><a href="#__codelineno-0-26">26</a></span>
+<span class="normal"><a href="#__codelineno-0-27">27</a></span>
+<span class="normal"><a href="#__codelineno-0-28">28</a></span>
+<span class="normal"><a href="#__codelineno-0-29">29</a></span>
+<span class="normal"><a href="#__codelineno-0-30">30</a></span>
+<span class="normal"><a href="#__codelineno-0-31">31</a></span>
+<span class="normal"><a href="#__codelineno-0-32">32</a></span>
+<span class="normal"><a href="#__codelineno-0-33">33</a></span>
+<span class="normal"><a href="#__codelineno-0-34">34</a></span>
+<span class="normal"><a href="#__codelineno-0-35">35</a></span>
+<span class="normal"><a href="#__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#__codelineno-0-38">38</a></span>
+<span class="normal"><a href="#__codelineno-0-39">39</a></span>
+<span class="normal"><a href="#__codelineno-0-40">40</a></span>
+<span class="normal"><a href="#__codelineno-0-41">41</a></span>
+<span class="normal"><a href="#__codelineno-0-42">42</a></span>
+<span class="normal"><a href="#__codelineno-0-43">43</a></span>
+<span class="normal"><a href="#__codelineno-0-44">44</a></span>
+<span class="normal"><a href="#__codelineno-0-45">45</a></span>
+<span class="normal"><a href="#__codelineno-0-46">46</a></span>
+<span class="normal"><a href="#__codelineno-0-47">47</a></span>
+<span class="normal"><a href="#__codelineno-0-48">48</a></span>
+<span class="normal"><a href="#__codelineno-0-49">49</a></span>
+<span class="normal"><a href="#__codelineno-0-50">50</a></span>
+<span class="normal"><a href="#__codelineno-0-51">51</a></span>
+<span class="normal"><a href="#__codelineno-0-52">52</a></span>
+<span class="normal"><a href="#__codelineno-0-53">53</a></span>
+<span class="normal"><a href="#__codelineno-0-54">54</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="k">class</span> <span class="nc">Algebra</span><span class="p">:</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An abstract class for enforcing the definition of operations we care about.</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17"></a>
+<a id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="sd">    We specify left-operators as abstract methods in this class. Once</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="sd">    the class is defined, we define the right-operators as being the</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="sd">    swapped versions of their left-operators (see `Algebra_reverse_op`</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="sd">    for details on how this is achieved).</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22"></a>
+<a id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="sd">    Note:</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="sd">       This class is for internal use only.</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26"></a>    <span class="nd">@abstractmethod</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27"></a>    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;An abstract left-addition method.&quot;&quot;&quot;</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29"></a>        <span class="o">...</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30"></a>
+<a id="__codelineno-0-31" name="__codelineno-0-31"></a>    <span class="nd">@abstractmethod</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32"></a>    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;An abstract left-subtraction method.&quot;&quot;&quot;</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34"></a>        <span class="o">...</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35"></a>
+<a id="__codelineno-0-36" name="__codelineno-0-36"></a>    <span class="nd">@abstractmethod</span>
+<a id="__codelineno-0-37" name="__codelineno-0-37"></a>    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;An abstract left-multiplication method.&quot;&quot;&quot;</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39"></a>        <span class="o">...</span>
+<a id="__codelineno-0-40" name="__codelineno-0-40"></a>
+<a id="__codelineno-0-41" name="__codelineno-0-41"></a>    <span class="nd">@abstractmethod</span>
+<a id="__codelineno-0-42" name="__codelineno-0-42"></a>    <span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<a id="__codelineno-0-43" name="__codelineno-0-43"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;An abstract left-division method.&quot;&quot;&quot;</span>
+<a id="__codelineno-0-44" name="__codelineno-0-44"></a>        <span class="o">...</span>
+<a id="__codelineno-0-45" name="__codelineno-0-45"></a>
+<a id="__codelineno-0-46" name="__codelineno-0-46"></a>    <span class="nd">@abstractmethod</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47"></a>    <span class="k">def</span> <span class="fm">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<a id="__codelineno-0-48" name="__codelineno-0-48"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;An abstract left-power (or left-exponentiation) method.&quot;&quot;&quot;</span>
+<a id="__codelineno-0-49" name="__codelineno-0-49"></a>        <span class="o">...</span>
+<a id="__codelineno-0-50" name="__codelineno-0-50"></a>
+<a id="__codelineno-0-51" name="__codelineno-0-51"></a>    <span class="nd">@abstractmethod</span>
+<a id="__codelineno-0-52" name="__codelineno-0-52"></a>    <span class="k">def</span> <span class="fm">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;An abstract negation (additive inverse) method.&quot;&quot;&quot;</span>
+<a id="__codelineno-0-54" name="__codelineno-0-54"></a>        <span class="o">...</span>
+</code></pre></div></td></tr></table></div>
+        </details>
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="distribution_algebra.algebra.Algebra.__add__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__add__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>An abstract left-addition method.</p>
+
+      <details class="quote">
+        <summary>Source code in <code>distribution_algebra/algebra.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-26">26</a></span>
+<span class="normal"><a href="#__codelineno-0-27">27</a></span>
+<span class="normal"><a href="#__codelineno-0-28">28</a></span>
+<span class="normal"><a href="#__codelineno-0-29">29</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="nd">@abstractmethod</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An abstract left-addition method.&quot;&quot;&quot;</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29"></a>    <span class="o">...</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="distribution_algebra.algebra.Algebra.__mul__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__mul__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>An abstract left-multiplication method.</p>
+
+      <details class="quote">
+        <summary>Source code in <code>distribution_algebra/algebra.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-36">36</a></span>
+<span class="normal"><a href="#__codelineno-0-37">37</a></span>
+<span class="normal"><a href="#__codelineno-0-38">38</a></span>
+<span class="normal"><a href="#__codelineno-0-39">39</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="nd">@abstractmethod</span>
+<a id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An abstract left-multiplication method.&quot;&quot;&quot;</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39"></a>    <span class="o">...</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="distribution_algebra.algebra.Algebra.__neg__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__neg__</span><span class="p">()</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>An abstract negation (additive inverse) method.</p>
+
+      <details class="quote">
+        <summary>Source code in <code>distribution_algebra/algebra.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-51">51</a></span>
+<span class="normal"><a href="#__codelineno-0-52">52</a></span>
+<span class="normal"><a href="#__codelineno-0-53">53</a></span>
+<span class="normal"><a href="#__codelineno-0-54">54</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="nd">@abstractmethod</span>
+<a id="__codelineno-0-52" name="__codelineno-0-52"></a><span class="k">def</span> <span class="fm">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An abstract negation (additive inverse) method.&quot;&quot;&quot;</span>
+<a id="__codelineno-0-54" name="__codelineno-0-54"></a>    <span class="o">...</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="distribution_algebra.algebra.Algebra.__pow__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__pow__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>An abstract left-power (or left-exponentiation) method.</p>
+
+      <details class="quote">
+        <summary>Source code in <code>distribution_algebra/algebra.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-46">46</a></span>
+<span class="normal"><a href="#__codelineno-0-47">47</a></span>
+<span class="normal"><a href="#__codelineno-0-48">48</a></span>
+<span class="normal"><a href="#__codelineno-0-49">49</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-46" name="__codelineno-0-46"></a><span class="nd">@abstractmethod</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47"></a><span class="k">def</span> <span class="fm">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<a id="__codelineno-0-48" name="__codelineno-0-48"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An abstract left-power (or left-exponentiation) method.&quot;&quot;&quot;</span>
+<a id="__codelineno-0-49" name="__codelineno-0-49"></a>    <span class="o">...</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="distribution_algebra.algebra.Algebra.__sub__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__sub__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>An abstract left-subtraction method.</p>
+
+      <details class="quote">
+        <summary>Source code in <code>distribution_algebra/algebra.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-31">31</a></span>
+<span class="normal"><a href="#__codelineno-0-32">32</a></span>
+<span class="normal"><a href="#__codelineno-0-33">33</a></span>
+<span class="normal"><a href="#__codelineno-0-34">34</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="nd">@abstractmethod</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An abstract left-subtraction method.&quot;&quot;&quot;</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34"></a>    <span class="o">...</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="distribution_algebra.algebra.Algebra.__truediv__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__truediv__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>An abstract left-division method.</p>
+
+      <details class="quote">
+        <summary>Source code in <code>distribution_algebra/algebra.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-41">41</a></span>
+<span class="normal"><a href="#__codelineno-0-42">42</a></span>
+<span class="normal"><a href="#__codelineno-0-43">43</a></span>
+<span class="normal"><a href="#__codelineno-0-44">44</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-41" name="__codelineno-0-41"></a><span class="nd">@abstractmethod</span>
+<a id="__codelineno-0-42" name="__codelineno-0-42"></a><span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<a id="__codelineno-0-43" name="__codelineno-0-43"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;An abstract left-division method.&quot;&quot;&quot;</span>
+<a id="__codelineno-0-44" name="__codelineno-0-44"></a>    <span class="o">...</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
+
+
+
+  </div>
+
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h2 id="distribution_algebra.algebra.Algebra_reverse_op" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">Algebra_reverse_op</span><span class="p">(</span><span class="n">op_name</span><span class="p">)</span></code>
+
+</h2>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Define the right-operator method, given a left-operator name in <code>op_name</code>.</p>
+
+<details class="note">
+  <summary>Note</summary>
+  <p>This function is for internal use only.</p>
+</details>
+      <details class="quote">
+        <summary>Source code in <code>distribution_algebra/algebra.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-57">57</a></span>
+<span class="normal"><a href="#__codelineno-0-58">58</a></span>
+<span class="normal"><a href="#__codelineno-0-59">59</a></span>
+<span class="normal"><a href="#__codelineno-0-60">60</a></span>
+<span class="normal"><a href="#__codelineno-0-61">61</a></span>
+<span class="normal"><a href="#__codelineno-0-62">62</a></span>
+<span class="normal"><a href="#__codelineno-0-63">63</a></span>
+<span class="normal"><a href="#__codelineno-0-64">64</a></span>
+<span class="normal"><a href="#__codelineno-0-65">65</a></span>
+<span class="normal"><a href="#__codelineno-0-66">66</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-57" name="__codelineno-0-57"></a><span class="k">def</span> <span class="nf">Algebra_reverse_op</span><span class="p">(</span><span class="n">op_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Algebra</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Any</span><span class="p">]:</span>
+<a id="__codelineno-0-58" name="__codelineno-0-58"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Define the right-operator method, given a left-operator name in `op_name`.</span>
+<a id="__codelineno-0-59" name="__codelineno-0-59"></a>
+<a id="__codelineno-0-60" name="__codelineno-0-60"></a><span class="sd">    Note:</span>
+<a id="__codelineno-0-61" name="__codelineno-0-61"></a><span class="sd">       This function is for internal use only.</span>
+<a id="__codelineno-0-62" name="__codelineno-0-62"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-63" name="__codelineno-0-63"></a>    <span class="k">def</span> <span class="nf">self_op_other</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Algebra</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<a id="__codelineno-0-64" name="__codelineno-0-64"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Reverse operation is just the operation acting on the arguments.&quot;&quot;&quot;</span>
+<a id="__codelineno-0-65" name="__codelineno-0-65"></a>        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op_name</span><span class="p">)(</span><span class="n">other</span><span class="p">)</span>
+<a id="__codelineno-0-66" name="__codelineno-0-66"></a>    <span class="k">return</span> <span class="n">self_op_other</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h2 id="distribution_algebra.algebra.define_right_operators_for_Algebra_class" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">define_right_operators_for_Algebra_class</span><span class="p">()</span></code>
+
+</h2>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Define a right-operator method for each of <code>Algebra</code>'s magic methods.</p>
+<p>We additionally mark each right-operator as being <code>final</code> in order
+to guard against a user over-riding them and possibly breaking
+symmetry with the left-operators.</p>
+
+      <details class="quote">
+        <summary>Source code in <code>distribution_algebra/algebra.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-68">68</a></span>
+<span class="normal"><a href="#__codelineno-0-69">69</a></span>
+<span class="normal"><a href="#__codelineno-0-70">70</a></span>
+<span class="normal"><a href="#__codelineno-0-71">71</a></span>
+<span class="normal"><a href="#__codelineno-0-72">72</a></span>
+<span class="normal"><a href="#__codelineno-0-73">73</a></span>
+<span class="normal"><a href="#__codelineno-0-74">74</a></span>
+<span class="normal"><a href="#__codelineno-0-75">75</a></span>
+<span class="normal"><a href="#__codelineno-0-76">76</a></span>
+<span class="normal"><a href="#__codelineno-0-77">77</a></span>
+<span class="normal"><a href="#__codelineno-0-78">78</a></span>
+<span class="normal"><a href="#__codelineno-0-79">79</a></span>
+<span class="normal"><a href="#__codelineno-0-80">80</a></span>
+<span class="normal"><a href="#__codelineno-0-81">81</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-68" name="__codelineno-0-68"></a><span class="k">def</span> <span class="nf">define_right_operators_for_Algebra_class</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-69" name="__codelineno-0-69"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Define a right-operator method for each of `Algebra`&#39;s magic methods.</span>
+<a id="__codelineno-0-70" name="__codelineno-0-70"></a>
+<a id="__codelineno-0-71" name="__codelineno-0-71"></a><span class="sd">    We additionally mark each right-operator as being `final` in order</span>
+<a id="__codelineno-0-72" name="__codelineno-0-72"></a><span class="sd">    to guard against a user over-riding them and possibly breaking</span>
+<a id="__codelineno-0-73" name="__codelineno-0-73"></a><span class="sd">    symmetry with the left-operators.</span>
+<a id="__codelineno-0-74" name="__codelineno-0-74"></a>
+<a id="__codelineno-0-75" name="__codelineno-0-75"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-76" name="__codelineno-0-76"></a>    <span class="n">magic_left_operator_methods</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-0-77" name="__codelineno-0-77"></a>        <span class="s2">&quot;__add__&quot;</span><span class="p">,</span> <span class="s2">&quot;__mul__&quot;</span><span class="p">,</span> <span class="s2">&quot;__sub__&quot;</span><span class="p">,</span> <span class="s2">&quot;__truediv__&quot;</span><span class="p">,</span> <span class="s2">&quot;__pow__&quot;</span><span class="p">]</span>
+<a id="__codelineno-0-78" name="__codelineno-0-78"></a>
+<a id="__codelineno-0-79" name="__codelineno-0-79"></a>    <span class="k">for</span> <span class="n">magic_method</span> <span class="ow">in</span> <span class="n">magic_left_operator_methods</span><span class="p">:</span>
+<a id="__codelineno-0-80" name="__codelineno-0-80"></a>        <span class="n">right_operator_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;__r&quot;</span> <span class="o">+</span> <span class="n">magic_method</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="s2">&quot;__&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-81" name="__codelineno-0-81"></a>        <span class="nb">setattr</span><span class="p">(</span><span class="n">Algebra</span><span class="p">,</span> <span class="n">right_operator_name</span><span class="p">,</span> <span class="n">final</span><span class="p">(</span><span class="n">Algebra_reverse_op</span><span class="p">(</span><span class="n">magic_method</span><span class="p">)))</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
 
 
 
