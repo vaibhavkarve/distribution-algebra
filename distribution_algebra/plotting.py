@@ -22,13 +22,13 @@ from distribution_algebra.beta4 import Beta4
 
 
 @singledispatch
-def plot(*_: Any, ax: None | plt.axes.Axes=None, **kwargs: Any) -> Any:  # pyright: ignore
+def plot(*_: Any, ax: None | plt.Axes=None, **kwargs: Any) -> Any:  # pyright: ignore
     raise NotImplementedError
 
 @plot.register(UnivariateDistribution)
 def plot_univariate_distribution(
         udist: UnivariateDistribution[T_in],
-        ax: None | plt.axes.Axes = None,  # type: ignore
+        ax: None | plt.Axes = None,  # type: ignore
         **kwargs: Any) -> list[Line2D]:
     ax = ax or plt.gca()
     plot_vectorized_distribution(udist.to_vectorized(), ax=ax, **kwargs)
@@ -47,7 +47,7 @@ def plot_univariate_distribution(
 @plot.register(VectorizedDistribution)
 def plot_vectorized_distribution(
         vdist: VectorizedDistribution[T_in],
-        ax: None | plt.axes.Axes = None,  # type: ignore
+        ax: None | plt.Axes = None,  # type: ignore
         **kwargs: Any) -> tuple[NDArray[np.float64], NDArray[np.float64], list[Polygon]]:
     ax = ax or plt.gca()
     assert ax is not None
@@ -66,11 +66,11 @@ def plot_vectorized_distribution(
 def plot_all_distributions() -> None:
     plt.xkcd()
     _: plt.figure.Figure  # type: ignore
-    axes: tuple[tuple[plt.axes.Axes, ...], ...]  # type: ignore
-    _, axes = plt.subplots(2, 3)
+    axes: tuple[tuple[plt.Axes, ...], ...]  # type: ignore
+    fig, axes = plt.subplots(2, 3, figsize=(16, 9))
 
     # Normal distributions.
-    ax: plt.axes.Axes = axes[0][0]  # type: ignore
+    ax: plt.Axes = axes[0][0]  # type: ignore
     a: Normal = Normal(mean=-5.0, var=9.0)
     b: Normal = Normal(mean=1.0, var=4.0)
     plot(a, ax=ax, label=f"{a}")
@@ -109,8 +109,8 @@ def plot_all_distributions() -> None:
     b41_plot[0].set_label("Prob. density func.")
     ax.legend()
 
-
-    plt.suptitle("Plotting various univariate random distributions.")
+    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+    plt.suptitle("Plotting various univariate random distributions")
     plt.show()
 
 
