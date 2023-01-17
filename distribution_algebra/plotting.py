@@ -65,9 +65,8 @@ def plot_vectorized_distribution(
 
 def plot_all_distributions() -> None:
     plt.xkcd()
-    _: plt.figure.Figure  # type: ignore
     axes: tuple[tuple[plt.Axes, ...], ...]  # type: ignore
-    fig, axes = plt.subplots(2, 3, figsize=(16, 9))
+    _, axes = plt.subplots(2, 3, figsize=(16, 9))
 
     # Normal distributions.
     ax: plt.Axes = axes[0][0]  # type: ignore

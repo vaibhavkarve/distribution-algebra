@@ -4,3 +4,5 @@ typings
 .coverage
 .hypothesis
 dist/
+site/
+docs/

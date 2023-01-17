@@ -39,18 +39,18 @@ markdown_extensions:
   - pymdownx.superfences
 
 nav:
-    - Home: 'index.md'
+    - Home: index.md
     - API Reference:
-        - algebra: "algebra.md"
-        - beta4: 'beta4.md'
-        - beta: 'beta.md'
-        - config: 'config.md'
+        - algebra: algebra.md
+        - beta4: beta4.md
+        - beta: beta.md
+        - config: config.md
         - distribution: distribution.md
-        - lognormal: 'lognormal.md'
-        - main: '__main__.md'
-        - normal: 'normal.md'
-        - plotting: 'plotting.md'
-        - poisson: 'poisson.md'
+        - lognormal: lognormal.md
+        - main: __main__.md
+        - normal: normal.md
+        - plotting: plotting.md
+        - poisson: poisson.md
 
 
 extra:
