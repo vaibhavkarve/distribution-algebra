@@ -12,6 +12,8 @@ from pydantic.dataclasses import dataclass as pydantic_dataclass
 from distribution_algebra.algebra import Algebra
 
 from distribution_algebra.config import ABS_TOL, SAMPLE_SIZE
+from typing import Any
+
 
 T_in = TypeVar("T_in", np.float64, np.int_)
 
@@ -20,6 +22,7 @@ T_in = TypeVar("T_in", np.float64, np.int_)
 # NDArray validation.
 @dataclass(frozen=True, kw_only=True, eq=False, unsafe_hash=True)
 class VectorizedDistribution(Algebra, Generic[T_in]):
+    """A Vectorized form of a probability distribution."""
     sample: NDArray[T_in]
     is_continuous: bool = field(default=True, repr=False)
 
@@ -30,6 +33,7 @@ class VectorizedDistribution(Algebra, Generic[T_in]):
     @property
     def var(self) -> np.float64:
         return np.float64(self.sample.var())
+
 
     def __add__(self, other: Any) -> Any:
         match other:

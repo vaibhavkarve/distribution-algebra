@@ -10,29 +10,48 @@ theme:
   features:
     - navigation.expand
     - navigation.top
+    - content.code.copy
+    - content.code.annotate
   icon:
     repo: fontawesome/brands/github
 
 plugins:
 - search
-- mkdocstrings
+- mkdocstrings:
+    handlers:
+      python:
+        paths: [.]
 - git-revision-date-localized:
     enable_creation_date: false
+
+watch:
+- distribution_algebra
 
 markdown_extensions:
   - attr_list
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
 
 nav:
     - Home: 'index.md'
     - API Reference:
-        - distribution_algebra.distribution: 'distribution.md'
-        - distribution_algebra.beta: 'beta.md'
-        - distribution_algebra.normal: 'normal.md'
-        - distribution_algebra.lognormal: 'lognormal.md'
-        - distribution_algebra.distribution: 'distribution.md'
+        - algebra: "algebra.md"
+        - beta4: 'beta4.md'
+        - beta: 'beta.md'
+        - config: 'config.md'
+        - distribution: distribution.md
+        - lognormal: 'lognormal.md'
+        - main: '__main__.md'
+        - normal: 'normal.md'
+        - plotting: 'plotting.md'
+        - poisson: 'poisson.md'
+
 
 extra:
   social:

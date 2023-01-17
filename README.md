@@ -29,7 +29,7 @@ license](https://github.com/vaibhavkarve/normal-form/blob/main/LICENSE).
 
 To get started on using this package,
 
-1.  Istall Python 3.10 or higher.
+1.  Install Python 3.10 or higher.
 2.  `python3.10 -m pip install distribution-algebra`
 3.  Use it in a python script (or interactive REPL)
 
