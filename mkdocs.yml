@@ -21,6 +21,9 @@ plugins:
     handlers:
       python:
         paths: [.]
+        options:
+          show_signature_annotations: true
+          separate_signature: true
 - git-revision-date-localized:
     enable_creation_date: false
 
