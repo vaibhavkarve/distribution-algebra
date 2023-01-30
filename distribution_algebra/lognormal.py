@@ -1,23 +1,23 @@
 #!/usr/bin/env python3
 
-from math import exp, expm1, inf, isfinite, log, log1p, nextafter, sqrt
+from math import exp, expm1, inf, isfinite, log, log1p, nextafter, sqrt, isclose
 from typing import Annotated, Any, cast
 
 import numpy as np
 import scipy
+from attr import frozen, field, validators, cmp_using
 from numpy.typing import NDArray
-from pydantic import confloat
-from pydantic.dataclasses import dataclass as pydantic_dataclass
 from typing_extensions import Self
 
 from distribution_algebra.config import RNG
 from distribution_algebra.distribution import UnivariateDistribution
+from devtools import debug
 
 
-@pydantic_dataclass(frozen=True, kw_only=True, eq=False)
+@frozen(kw_only=True)
 class Lognormal(UnivariateDistribution[np.float64]):
-    mean: Annotated[float, confloat(gt=0.0, allow_inf_nan=False)]
-    var: Annotated[float, confloat(gt=0.0, allow_inf_nan=False)]
+    mean: float = field(validator=validators.gt(0.0), eq=cmp_using(eq=lambda a, b: isclose(a, b, rel_tol=1e-6, abs_tol=1e-6)))
+    var: float = field(validator=validators.gt(0.0), eq=cmp_using(eq=lambda a, b: isclose(a, b, rel_tol=1e-6, abs_tol=1e-6)))
 
     @property
     def normal_mean(self) -> float:
@@ -44,9 +44,7 @@ class Lognormal(UnivariateDistribution[np.float64]):
     def from_normal_mean_var(cls, μ: float, σ̂2: float) -> Self:
         var = expm1(σ̂2) * exp(2*μ + σ̂2)
         assert isfinite(var)
-        return_value = cls(mean=exp(μ + σ̂2 / 2), var=expm1(σ̂2) * exp(2*μ + σ̂2))
-        return_value.__pydantic_validate_values__()  # type: ignore
-        return return_value
+        return cls(mean=exp(μ + σ̂2 / 2), var=expm1(σ̂2) * exp(2*μ + σ̂2))
 
     def draw(self, size: int) -> NDArray[np.float64]:
         return RNG.lognormal(mean=self.normal_mean, sigma=sqrt(self.normal_var), size=size)

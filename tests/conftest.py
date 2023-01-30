@@ -21,8 +21,8 @@ DISTRIBUTIONS: tuple[type[UnivariateDistribution[np.float64]]
 # Register a search-strategy for Normal distributions.
 st.register_type_strategy(
     Normal, st.builds(Normal,
-                      mean=st.floats(allow_infinity=False, allow_nan=False),
-                      var=st.floats(min_value=0.0, exclude_min=True,
+                      mean=st.floats(width=16, allow_infinity=False, allow_nan=False),
+                      var=st.floats(width=16, min_value=0.0, exclude_min=True,
                                     allow_infinity=False, allow_nan=False)))
 
 

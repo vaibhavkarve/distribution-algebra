@@ -1,21 +1,19 @@
 #!/usr/bin/env python3
 
-from typing import Annotated, Any, cast
+from typing import Any, cast
 
 import numpy as np
 import scipy
 from numpy.typing import NDArray
-from pydantic import confloat
-from pydantic.dataclasses import dataclass as pydantic_dataclass
-
+from attr import frozen, field, validators
 from distribution_algebra.config import RNG
 from distribution_algebra.distribution import UnivariateDistribution
 
 
-@pydantic_dataclass(frozen=True, kw_only=True, eq=True)
+@frozen(kw_only=True)
 class Beta(UnivariateDistribution[np.float64]):
-    alpha: Annotated[float, confloat(gt=0, allow_inf_nan=False)]
-    beta: Annotated[float, confloat(gt=0, allow_inf_nan=False)]
+    alpha: float = field(validator=validators.gt(0.0))
+    beta: float = field(validator=validators.gt(0.0))
 
     def draw(self, size: int) -> NDArray[np.float64]:
         return RNG.beta(a=self.alpha, b=self.beta, size=size)

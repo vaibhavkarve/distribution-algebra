@@ -1,27 +1,23 @@
 #!/usr/bin/env python3
 
-from typing import Annotated
-
 import numpy as np
 from numpy.typing import NDArray
-from pydantic import confloat, validator
-from pydantic.dataclasses import dataclass as pydantic_dataclass
 
-from distribution_algebra.distribution import UnivariateDistribution
 from distribution_algebra.beta import Beta
+from distribution_algebra.distribution import UnivariateDistribution
+from attr import Attribute, field, validators, frozen
 
 
-@pydantic_dataclass(frozen=True, kw_only=True, eq=True)
+@frozen(kw_only=True)
 class Beta4(UnivariateDistribution[np.float64]):
-    alpha: Annotated[float, confloat(gt=0, allow_inf_nan=False)]
-    beta: Annotated[float, confloat(gt=0, allow_inf_nan=False)]
-    minimum: Annotated[float, confloat(allow_inf_nan=False)]
-    maximum: Annotated[float, confloat(allow_inf_nan=False)]
+    alpha: float = field(validator=validators.gt(0.0))
+    beta: float = field(validator=validators.gt(0.0))
+    minimum: float
+    maximum: float = field()
 
-    @validator("maximum", pre=True, always=True)
-    def maximum_gt_minimum(cls, maximum: float, values: dict[str, float]) -> float:
-        assert maximum > values["minimum"]
-        return maximum
+    @maximum.validator
+    def maximum_gt_minimum(self, _: Attribute, maximum_value: float) -> None:
+        assert maximum_value > self.minimum
 
     def beta_of_alpha_beta(self) -> Beta:
         return Beta(alpha=self.alpha, beta=self.beta)

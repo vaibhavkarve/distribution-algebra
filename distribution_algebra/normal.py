@@ -4,23 +4,21 @@ from typing import Annotated, Any, cast
 
 import numpy as np
 import scipy
+from attr import frozen, field, validators
 from numpy.typing import NDArray
-from pydantic import confloat
-from pydantic.dataclasses import dataclass as pydantic_dataclass
 from typing_extensions import Self
 
 from distribution_algebra.config import RNG
 from distribution_algebra.distribution import UnivariateDistribution
 
 
-@pydantic_dataclass(frozen=True, kw_only=True, eq=False)
+@frozen(kw_only=True)
 class Normal(UnivariateDistribution[np.float64]):
-    mean: Annotated[float, confloat(allow_inf_nan=False)]
-    var: Annotated[float, confloat(gt=0.0, allow_inf_nan=False)]
+    mean: float
+    var: float = field(validator=validators.gt(0.0))
 
     def draw(self, size: int) -> NDArray[np.float64]:
-        return RNG.normal(
-            loc=self.mean, scale=sqrt(self.var), size=size)
+        return RNG.normal(loc=self.mean, scale=sqrt(self.var), size=size)
 
     def pdf(self, linspace: NDArray[np.float64]) -> NDArray[np.float64]:  # type: ignore
         return cast(NDArray[np.float64], scipy.stats.norm.pdf(  # pyright: ignore[reportUnknownVariableType]

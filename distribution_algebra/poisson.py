@@ -1,22 +1,20 @@
 #!/usr/bin/env python3
 from dataclasses import field
 from math import floor, inf
-from typing import Annotated, Any
+from typing import Any
 
 import numpy as np
 import scipy
 from numpy.typing import NDArray
-from pydantic import confloat
-from pydantic.dataclasses import dataclass as pydantic_dataclass
+from attr import frozen, field, validators
 
 from distribution_algebra.config import RNG
 from distribution_algebra.distribution import UnivariateDistribution
 
 
-@pydantic_dataclass(frozen=True, kw_only=True, eq=True)
-class Poisson(UnivariateDistribution[np.int_]):
-    lam: Annotated[float, confloat(gt=0.0, allow_inf_nan=False)]  # rate parameter.
-    is_continuous: bool = field(default=False, repr=False)
+@frozen(kw_only=True)
+class Poisson(UnivariateDistribution[np.int64]):
+    lam: float = field(validator=validators.gt(0.0))  # rate parameter.
 
     def draw(self, size: int) -> NDArray[np.int_]:
         return RNG.poisson(lam=self.lam, size=size)

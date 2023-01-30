@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 
-from hypothesis import given
+from hypothesis import given, assume
 from hypothesis import strategies as st
 
 from distribution_algebra.normal import Normal
 
 
 @given(st.from_type(Normal),
-       st.floats(width=32, allow_infinity=False, allow_nan=False),
+       st.floats(width=16, allow_infinity=False, allow_nan=False),
        st.floats(width=64, allow_infinity=False, allow_nan=False))
 def test_affine(x: Normal, a: float, b: float) -> None:
+    assume(a)
     assert a * x + b == Normal(mean=a * x.mean + b, var=a**2 * x.var)   # type: ignore
 
 

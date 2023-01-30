@@ -9,13 +9,13 @@ from hypothesis import given
 from hypothesis import strategies as st
 
 from distribution_algebra.beta import Beta
-from distribution_algebra.config import SAMPLE_SIZE, RNG
+from distribution_algebra.beta4 import Beta4
+from distribution_algebra.config import RNG, SAMPLE_SIZE
 from distribution_algebra.distribution import (UnivariateDistribution,
                                                VectorizedDistribution)
 from distribution_algebra.lognormal import Lognormal
 from distribution_algebra.normal import Normal
 from distribution_algebra.poisson import Poisson
-from distribution_algebra.beta4 import Beta4
 
 
 def randomly_chosen_distributions() -> dict[str,
@@ -29,7 +29,8 @@ def randomly_chosen_distributions() -> dict[str,
         "Beta": Beta(alpha=random(), beta=random()),
         "Poisson": Poisson(lam=random()),
         "Beta4": Beta4(alpha=random(), beta=random(), minimum=random(), maximum=random() + 1),
-        "VectorizedDistribution": VectorizedDistribution(sample=RNG.random(size=SAMPLE_SIZE)),
+        "VectorizedDistribution (continuous)": VectorizedDistribution(sample=RNG.random(size=SAMPLE_SIZE),
+                                                                      is_continuous=True),
     }
 
 

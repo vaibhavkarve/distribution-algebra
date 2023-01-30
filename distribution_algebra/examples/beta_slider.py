@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from typing import cast
+
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
