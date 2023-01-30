@@ -5,8 +5,8 @@ from typing import Any
 
 import numpy as np
 import scipy
+from attr import field, frozen, validators
 from numpy.typing import NDArray
-from attr import frozen, field, validators
 
 from distribution_algebra.config import RNG
 from distribution_algebra.distribution import UnivariateDistribution

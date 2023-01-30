@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
 import numpy as np
+from attr import Attribute, field, frozen, validators
 from numpy.typing import NDArray
 
 from distribution_algebra.beta import Beta
 from distribution_algebra.distribution import UnivariateDistribution
-from attr import Attribute, field, validators, frozen
 
 
 @frozen(kw_only=True)
@@ -15,12 +15,12 @@ class Beta4(UnivariateDistribution[np.float64]):
     minimum: float
     maximum: float = field()
 
-    @maximum.validator
-    def maximum_gt_minimum(self, _: Attribute, maximum_value: float) -> None:
+    @maximum.validator  # type: ignore
+    def maximum_gt_minimum(self, _: Attribute[float], maximum_value: float) -> None:
         assert maximum_value > self.minimum
 
     def beta_of_alpha_beta(self) -> Beta:
-        return Beta(alpha=self.alpha, beta=self.beta)
+        return Beta(alpha=self.alpha, beta=self.beta)  # pyright: ignore
 
     def draw(self, size: int) -> NDArray[np.float64]:
         return self.beta_of_alpha_beta().draw(size=size) * (self.maximum - self.minimum) + self.minimum

@@ -2,7 +2,7 @@
 
 from math import isclose
 
-from hypothesis import given, assume
+from hypothesis import assume, given
 from hypothesis import strategies as st
 from numpy import log
 

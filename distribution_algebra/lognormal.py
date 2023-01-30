@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 
-from math import exp, expm1, inf, isfinite, log, log1p, nextafter, sqrt, isclose
-from typing import Annotated, Any, cast
+from math import (exp, expm1, inf, isclose, isfinite, log, log1p, nextafter,
+                  sqrt)
+from typing import Any, cast
 
 import numpy as np
 import scipy
-from attr import frozen, field, validators, cmp_using
+from attr import cmp_using, field, frozen, validators
 from numpy.typing import NDArray
 from typing_extensions import Self
 
 from distribution_algebra.config import RNG
 from distribution_algebra.distribution import UnivariateDistribution
-from devtools import debug
 
 
 @frozen(kw_only=True)

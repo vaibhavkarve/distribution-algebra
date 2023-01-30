@@ -24,7 +24,7 @@ test = ["astroid", "pytest"]
 name = "attrs"
 version = "22.2.0"
 description = "Classes Without Boilerplate"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -1162,7 +1162,7 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10,<3.11"
-content-hash = "6bad4759f46fc0e9f1d952040cd97d1652ca96efb7c5caa04b50764e2f044b0a"
+content-hash = "a1916c759b8560308a05b246757fc9f4ab015907caaa6bce3f40a134f1b53bd8"
 
 [metadata.files]
 appnope = [

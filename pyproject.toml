@@ -32,6 +32,7 @@ matplotlib = "^3.6.2"
 scipy = "^1.9.3"
 loguru = "^0.6.0"
 multipledispatch = "^0.6.0"
+attrs = "^22.2.0"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -47,7 +48,7 @@ mkdocs = "^1.4.2"
 mkdocs-material = "^9.0.0"
 mkdocs-git-revision-date-localized-plugin = "^1.1.0"
 mkdocstrings = {version = ">=0.18", extras = ["python"]}
-pyright = ">=1.1.289"
+pyright = "^1.1.291"
 ipdb = "^0.13.11"
 
 [build-system]
@@ -95,6 +96,7 @@ typeCheckingMode = "strict"
 venvPath = ".venv"
 reportUnknownMemberType = false
 reportUnknownVariableType = false
+reportUntypedClassDecorator = false
 executionEnvironments = [
   { root = "." }
 ]

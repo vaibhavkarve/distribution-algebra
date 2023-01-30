@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from hypothesis import given, assume
+from hypothesis import assume, given
 from hypothesis import strategies as st
 
 from distribution_algebra.normal import Normal

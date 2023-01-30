@@ -4,7 +4,7 @@ from typing import Annotated, Any, cast
 
 import numpy as np
 import scipy
-from attr import frozen, field, validators
+from attr import field, frozen, validators
 from numpy.typing import NDArray
 from typing_extensions import Self
 

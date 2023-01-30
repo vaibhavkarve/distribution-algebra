@@ -41,11 +41,6 @@ class VectorizedDistribution(Algebra, Generic[T_in]):
     Other Params: Implementation details
        * We use `attr.frozen` in this definition because it supports validation and
          immutability.
-       * In most cases, if using  `(x: UnivariateDistribution).to_vectorized()`
-         to create a `VectorizedDistribution` instance, the instance's `is_continuous`
-         parameter is equal to `x.is_continuous`. In other words, continuous
-         (discrete) univariate distributions give rise to continuous (discrete)
-         vectorized distributions.
        * We use `attr.frozen` to enforce immutability of each instance of this class.
          To modify the class or its sample-attribute, the user must define a new
          instance (or use `attr.evolve`) instead of modifying an existing one.
@@ -53,10 +48,10 @@ class VectorizedDistribution(Algebra, Generic[T_in]):
          operations enabled by numpy's C API.
 
     """
-    sample: NDArray[T_in] = attr.field(eq=attr.cmp_using(eq=np.array_equal))
+    sample: NDArray[T_in] = attr.field(eq=attr.cmp_using(eq=np.array_equal))  # type: ignore
     is_continuous: bool = attr.field(repr=False)
 
-    @is_continuous.validator
+    @is_continuous.validator  # type: ignore
     def check_is_continuous(self, _: Literal["is_continuous"], is_continuous_value: bool) -> None:
         match self.sample.dtype:
             case np.int64:
@@ -98,11 +93,13 @@ class VectorizedDistribution(Algebra, Generic[T_in]):
         """
         match other:
             case VectorizedDistribution():
-                return VectorizedDistribution(sample=self.sample + other.sample,
-                                              is_continuous=self.is_continuous or other.is_continuous)
+                return VectorizedDistribution(  # type: ignore
+                    sample=self.sample + other.sample,
+                    is_continuous=self.is_continuous or other.is_continuous)
             case float() | int():
-                return VectorizedDistribution(sample=self.sample + other,
-                                              is_continuous=self.is_continuous or isinstance(other, float))
+                return VectorizedDistribution(
+                    sample=self.sample + other,  # type: ignore
+                    is_continuous=self.is_continuous or isinstance(other, float))
             case _:
                 return NotImplemented
 
@@ -118,11 +115,13 @@ class VectorizedDistribution(Algebra, Generic[T_in]):
         """
         match other:
             case VectorizedDistribution():
-                return VectorizedDistribution(sample=self.sample * other.sample,
-                                              is_continuous=self.is_continuous or other.is_continuous)
+                return VectorizedDistribution(  # type: ignore
+                    sample=self.sample * other.sample,
+                    is_continuous=self.is_continuous or other.is_continuous)
             case float() | int():
-                return VectorizedDistribution(sample=self.sample * other,
-                                              is_continuous=self.is_continuous or isinstance(other, float))
+                return VectorizedDistribution(  # type: ignore
+                    sample=self.sample * other,
+                    is_continuous=self.is_continuous or isinstance(other, float))
             case _:
                 return NotImplemented
 
@@ -138,11 +137,13 @@ class VectorizedDistribution(Algebra, Generic[T_in]):
         """
         match other:
             case VectorizedDistribution():
-                return VectorizedDistribution(sample=self.sample - other.sample,
-                                              is_continuous=self.is_continuous or other.is_continuous)
+                return VectorizedDistribution(  # type: ignore
+                    sample=self.sample - other.sample,
+                    is_continuous=self.is_continuous or other.is_continuous)
             case float() | int():
-                return VectorizedDistribution(sample=self.sample - other,
-                                              is_continuous=self.is_continuous or isinstance(other, float))
+                return VectorizedDistribution(  # type: ignore
+                    sample=self.sample - other,
+                    is_continuous=self.is_continuous or isinstance(other, float))
             case _:
                 return NotImplemented
 
@@ -168,15 +169,17 @@ class VectorizedDistribution(Algebra, Generic[T_in]):
                     warnings.warn("All entries in base array should be positive.")
                 if (other.sample == 0).any() and (self.sample == 0).any():
                     warnings.warn("Attempting to compute 0**0 during (base array)**(other array) computation.")
-                return VectorizedDistribution(sample=self.sample ** other.sample,
-                                              is_continuous=self.is_continuous or other.is_continuous)
+                return VectorizedDistribution(  # type: ignore
+                    sample=self.sample ** other.sample,
+                    is_continuous=self.is_continuous or other.is_continuous)
             case float() | int():
                 if (self.sample < 0).any():
                     warnings.warn("All entries in base array should be positive.")
                 if not other and (self.sample == 0).any():
                     warnings.warn("Attempting to compute 0**0 during (base array)**other computation.")
-                return VectorizedDistribution(sample=self.sample ** other,
-                                              is_continuous=self.is_continuous or isinstance(other, float))
+                return VectorizedDistribution(  # type: ignore
+                    sample=self.sample ** other,
+                    is_continuous=self.is_continuous or isinstance(other, float))
             case _:
                 return NotImplemented
 
@@ -198,13 +201,15 @@ class VectorizedDistribution(Algebra, Generic[T_in]):
             case VectorizedDistribution():
                 if (other.sample == 0).any():
                     warnings.warn("All entries in denominator array should be non-zero.")
-                return VectorizedDistribution(sample=self.sample / other.sample,
-                                              is_continuous=True)
+                return VectorizedDistribution(  # type: ignore
+                    sample=self.sample / other.sample,
+                    is_continuous=True)
             case float() | int():
                 if other == 0:
                     warnings.warn("Attempting to divide a vectorized distribution by zero.")
-                return VectorizedDistribution(sample=self.sample / other,
-                                              is_continuous=True)
+                return VectorizedDistribution(  # type: ignore
+                    sample=self.sample / other,
+                    is_continuous=True)
             case _:
                 return NotImplemented
 
@@ -215,7 +220,7 @@ class VectorizedDistribution(Algebra, Generic[T_in]):
            (VectorizedDistribution): A VectorizedDistribution whose sample entries are the
               negative of the original's.
         """
-        return VectorizedDistribution(sample=-self.sample, is_continuous=self.is_continuous)
+        return VectorizedDistribution(sample=-self.sample, is_continuous=self.is_continuous)  # type: ignore
 
 
 @attr.frozen(kw_only=True)
@@ -266,8 +271,14 @@ class UnivariateDistribution(Algebra, Generic[T_in]):
     def draw(self, size: int) -> NDArray[T_in]: ...
 
     def to_vectorized(self) -> VectorizedDistribution[T_in]:
-        return VectorizedDistribution(sample=self.draw(size=SAMPLE_SIZE),
-                                      is_continuous=self.is_continuous)
+        """In most cases, if using  `(x: UnivariateDistribution).to_vectorized()`
+        to create a `VectorizedDistribution` instance, the instance's `is_continuous`
+        parameter is equal to `x.is_continuous`. In other words, continuous
+        (discrete) univariate distributions give rise to continuous (discrete)
+        vectorized distributions."""
+        return VectorizedDistribution(  # type: ignore
+            sample=self.draw(size=SAMPLE_SIZE),
+            is_continuous=self.is_continuous)
 
     @abstractmethod
     def pdf(self, linspace: NDArray[np.float64] | NDArray[np.int64]) -> NDArray[np.float64]: ...

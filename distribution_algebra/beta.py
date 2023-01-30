@@ -4,8 +4,9 @@ from typing import Any, cast
 
 import numpy as np
 import scipy
+from attr import field, frozen, validators
 from numpy.typing import NDArray
-from attr import frozen, field, validators
+
 from distribution_algebra.config import RNG
 from distribution_algebra.distribution import UnivariateDistribution
 
@@ -55,6 +56,6 @@ class Beta(UnivariateDistribution[np.float64]):
     def __rsub__(self, other: Any) -> Any:
         match other:
             case 1:
-                return Beta(alpha=self.beta, beta=self.alpha)
+                return Beta(alpha=self.beta, beta=self.alpha)  # type: ignore
             case _:
                 return super().__rsub__(other)  # type: ignore
