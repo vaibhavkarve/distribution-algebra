@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from random import random
+from random import random, randint
 from typing import TypeAlias
 
 import numpy as np
@@ -10,6 +10,7 @@ from hypothesis import strategies as st
 
 from distribution_algebra.beta import Beta
 from distribution_algebra.beta4 import Beta4
+from distribution_algebra.binomial import Binomial
 from distribution_algebra.config import RNG, SAMPLE_SIZE
 from distribution_algebra.distribution import (UnivariateDistribution,
                                                VectorizedDistribution)
@@ -24,13 +25,16 @@ def randomly_chosen_distributions() -> dict[str,
                                             | VectorizedDistribution[np.float64] | float]:
     return {
         "float": random(),
-        "Normal": Normal(mean=random(), var=random()),
-        "Lognormal": Lognormal(mean=random(), var=random()),
-        "Beta": Beta(alpha=random(), beta=random()),
-        "Poisson": Poisson(lam=random()),
-        "Beta4": Beta4(alpha=random(), beta=random(), minimum=random(), maximum=random() + 1),
-        "VectorizedDistribution (continuous)": VectorizedDistribution(sample=RNG.random(size=SAMPLE_SIZE),
-                                                                      is_continuous=True),
+        "Normal": Normal(mean=random(), var=random()),  # type: ignore
+        "Lognormal": Lognormal(mean=random(), var=random()),  # type: ignore
+        "Beta": Beta(alpha=random(), beta=random()),  # type: ignore
+        "Poisson": Poisson(lam=random()),  # type: ignore
+        "Beta4": Beta4(alpha=random(), beta=random(), minimum=random(), maximum=random() + 1),  # type: ignore
+        "VectorizedDistribution (continuous)": VectorizedDistribution(  # type: ignore
+            sample=RNG.random(size=SAMPLE_SIZE), is_continuous=True),
+        "VectorizedDistribution (discrete)": VectorizedDistribution(  # type: ignore
+            sample=RNG.integers(100, size=SAMPLE_SIZE), is_continuous=False),
+        "Binomial": Binomial(n=randint(0, 100), p=random()),  # type: ignore
     }
 
 
@@ -45,13 +49,12 @@ def test_operations(data: st.DataObject) -> None:
     # Normal + Normal ~ Normal
     x: Normal = data.draw(st.from_type(Normal))
     y: Normal = data.draw(st.from_type(Normal))
-    assert x + y == Normal(mean=x.mean + y.mean,
-                           var=x.var + y.var)
+    assert x + y == Normal(mean=x.mean + y.mean, var=x.var + y.var)  # type: ignore
 
     # Poisson + Poisson ~ Poisson
     z: Poisson = data.draw(st.from_type(Poisson))
     w: Poisson = data.draw(st.from_type(Poisson))
-    assert z + w == Poisson(lam=z.lam + w.lam)
+    assert z + w == Poisson(lam=z.lam + w.lam)  # type: ignore
 
     # Lognormal * Lognormal ~ Lognormal
     a: Lognormal = data.draw(st.from_type(Lognormal))
@@ -61,8 +64,13 @@ def test_operations(data: st.DataObject) -> None:
 
     # 1 - Beta(α, β) ~ Beta(β, α)
     c: Beta = data.draw(st.from_type(Beta))
-    assert 1 - c == Beta(alpha=c.beta, beta=c.alpha)
+    assert 1 - c == Beta(alpha=c.beta, beta=c.alpha)  # type: ignore
     assert 1 - c == 1.0 - c
+
+    # Binomial(n, p) + Binomial(m, p) = Binomial(n + m, p)
+    n, m = data.draw(st.integers(min_value=1)), data.draw(st.integers(min_value=1))
+    p = data.draw(st.floats(min_value=0.0, max_value=1.0))
+    assert Binomial(n=n, p=p) + Binomial(n=m, p=p) == Binomial(n=n + m, p=p)  # type: ignore
 
 
 UnivariateUnion: TypeAlias = \
