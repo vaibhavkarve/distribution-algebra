@@ -16,7 +16,7 @@ class Beta4(UnivariateDistribution[np.float64]):
     maximum: float = field()
 
     @maximum.validator  # type: ignore
-    def maximum_gt_minimum(self, _: Attribute[float], maximum_value: float) -> None:
+    def maximum_gt_minimum(self, _: Attribute["float"], maximum_value: float) -> None:
         assert maximum_value > self.minimum
 
     def beta_of_alpha_beta(self) -> Beta:

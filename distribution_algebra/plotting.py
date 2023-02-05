@@ -13,6 +13,7 @@ from numpy.typing import NDArray
 
 from distribution_algebra.beta import Beta
 from distribution_algebra.beta4 import Beta4
+from distribution_algebra.binomial import Binomial
 from distribution_algebra.config import SAMPLE_SIZE, SUPPORT_MAX, SUPPORT_MIN
 from distribution_algebra.distribution import (T_in, UnivariateDistribution,
                                                VectorizedDistribution)
@@ -106,6 +107,13 @@ def plot_all_distributions() -> None:
     b41: Beta4 = Beta4(alpha=9, beta=3, minimum=5, maximum=8)
     b41_plot = plot(b41, ax=ax, label="\n".join(wrap(f"{b41}", width=30)))
     b41_plot[0].set_label("Prob. density func.")
+    ax.legend()
+
+    # Binomial distributions.
+    ax = axes[1][2]
+    binom: Binomial = Binomial(n=16, p=0.5)
+    binom_plot = plot(binom, ax=ax, label=f"{binom}")
+    binom_plot[0].set_label("Prob. mass func.")
     ax.legend()
 
     plt.tight_layout(rect=[0, 0.03, 1, 0.95])
