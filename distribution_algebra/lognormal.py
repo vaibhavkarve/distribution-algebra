@@ -39,8 +39,8 @@ class Lognormal(UnivariateDistribution[np.float64]):
         return exp(self.normal_mean - self.normal_var)
 
     @property
-    def support(self) -> tuple[float, float]:
-        return nextafter(0.0, inf), inf
+    def support(self) -> tuple[np.float64, np.float64]:
+        return np.float64(nextafter(0.0, inf)), np.float64(np.finfo(np.float64).max)
 
     @classmethod
     def from_normal_mean_var(cls, μ: float, σ̂2: float) -> Self:

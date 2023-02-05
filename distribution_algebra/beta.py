@@ -50,8 +50,8 @@ class Beta(UnivariateDistribution[np.float64]):
         return NotImplemented
 
     @property
-    def support(self) -> tuple[float, float]:
-        return 0.0, 1.0
+    def support(self) -> tuple[np.float64, np.float64]:
+        return np.float64(0.0), np.float64(1.0)
 
     def __rsub__(self, other: Any) -> Any:
         match other:

@@ -35,12 +35,12 @@ def plot_univariate_distribution(
     plot_vectorized_distribution(udist.to_vectorized(), ax=ax, **kwargs)
     if not udist.is_continuous:
         arange: NDArray[np.float64] = np.arange(
-            start=max(udist.support[0], SUPPORT_MIN),
-            stop=min(udist.support[1], SUPPORT_MAX))
+            start=max(udist.support[0], SUPPORT_MIN),  # type: ignore[type-var]
+            stop=min(udist.support[1], SUPPORT_MAX))  # type: ignore[type-var]
         return ax.plot(arange, udist.pdf(arange), "o", color="r")  # type: ignore
-    linspace: NDArray[np.float64] = np.linspace(
-        start=max(udist.support[0], SUPPORT_MIN),
-        stop=min(udist.support[1], SUPPORT_MAX),
+    linspace: NDArray[np.float64] = np.linspace(  # type: ignore[call-overload]
+        start=max(udist.support[0], SUPPORT_MIN),  # type: ignore[type-var]
+        stop=min(udist.support[1], SUPPORT_MAX),  # type: ignore[type-var]
         num=SAMPLE_SIZE)
     return ax.plot(linspace, udist.pdf(linspace), color="r")  # type: ignore
 

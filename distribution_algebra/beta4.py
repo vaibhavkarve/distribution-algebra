@@ -13,7 +13,7 @@ from distribution_algebra.distribution import UnivariateDistribution
 class Beta4(UnivariateDistribution[np.float64]):
     alpha: float = field(validator=validators.gt(0.0))
     beta: float = field(validator=validators.gt(0.0))
-    minimum: float
+    minimum: float = field()
     maximum: float = field()
 
     @maximum.validator  # type: ignore
@@ -47,5 +47,5 @@ class Beta4(UnivariateDistribution[np.float64]):
         return self.beta_of_alpha_beta().mode * (self.maximum - self.minimum) + self.minimum
 
     @property
-    def support(self) -> tuple[float, float]:
-        return self.minimum, self.maximum
+    def support(self) -> tuple[np.float64, np.float64]:
+        return np.float64(self.minimum), np.float64(self.maximum)

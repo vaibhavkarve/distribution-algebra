@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from math import floor, inf
+from math import floor
 from typing import Any
 
 import attr
@@ -48,5 +48,5 @@ class Poisson(UnivariateDistribution[np.int_]):
                 return super().__add__(other)
 
     @property
-    def support(self) -> tuple[float, float]:
-        return 0, inf
+    def support(self) -> tuple[np.int_, np.int_]:
+        return np.int_(0), np.int_(np.iinfo(np.int_).max)

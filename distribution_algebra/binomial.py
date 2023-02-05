@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from math import floor, inf
+from math import floor
 from typing import Any
 
 import numpy as np
@@ -57,8 +57,8 @@ class Binomial(UnivariateDistribution[np.int_]):
 
 
     @property
-    def support(self) -> tuple[int, float]:
-        return 0, inf
+    def support(self) -> tuple[np.int_, np.int_]:
+        return np.int_(0), np.int_(np.iinfo(np.int_).max)  # max = np.inf.
 
     def pdf(self, arange: NDArray[np.int_]) -> NDArray[np.float64]:  # type: ignore
         return scipy.stats.binom.pmf(  # type: ignore

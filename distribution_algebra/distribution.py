@@ -246,6 +246,17 @@ class UnivariateDistribution(Algebra, Generic[T_in]):
     """
     @property
     def is_continuous(self) -> bool:
+        """Return True if the distribution is continuous, else return False.
+
+        Continuity (or distcreteness) of the distribution is the
+        continuity (or discreteness) of its support space. This is
+        captured by the Generic type variable `T_in`. If the
+        distribution is continuous (like `Normal <:
+        UnivariateDistribution[np.float64]`, the this property returns
+        True. If the distribution is discrete (like `Binomial <:
+        UnivariateDistribution[np.int_]`, then this property is False.
+
+        """
         assert hasattr(self, "__orig_bases__")
         T_in_at_runtime: type = get_args(self.__orig_bases__[0])[0]  # pyright: ignore
         match T_in_at_runtime:
@@ -258,15 +269,23 @@ class UnivariateDistribution(Algebra, Generic[T_in]):
 
     @property
     @abstractmethod
-    def median(self) -> float: ...
+    def median(self) -> float:
+        """Return the median value of the distribution if it is defined."""
 
     @property
     @abstractmethod
-    def mode(self) -> float: ...
+    def mode(self) -> float:
+        """Return the mode (most-liekely) value of the distribution if it is defined."""
 
     @property
     @abstractmethod
-    def support(self) -> tuple[int | float, int | float]: ...
+    def support(self) -> tuple[T_in, T_in]:
+        """Return the (min, max) range of the distribution's support interval.
+
+        In some cases, if one of the support ends is positive or
+        negative infinity, we use the closest value expressible to
+        infinity while using a constrained `T_in` type.
+        """
 
     @abstractmethod
     def draw(self, size: int) -> NDArray[T_in]: ...

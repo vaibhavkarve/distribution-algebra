@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from math import inf, sqrt
+from math import sqrt
 from typing import Any, cast
 
 import numpy as np
@@ -68,8 +68,8 @@ class Normal(UnivariateDistribution[np.float64]):
         return self.mean
 
     @property
-    def support(self) -> tuple[float, float]:
-        return -inf, inf
+    def support(self) -> tuple[np.float64, np.float64]:
+        return np.finfo(np.float64).min, np.finfo(np.float64).max  # (-inf, +inf)
 
     @classmethod
     def from_sample(cls, sample: NDArray[np.float64]) -> Self:
