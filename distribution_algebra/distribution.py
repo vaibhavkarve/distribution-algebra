@@ -26,7 +26,7 @@ from numpy.typing import NDArray
 from distribution_algebra.algebra import Algebra
 from distribution_algebra.config import ABS_TOL, SAMPLE_SIZE
 
-T_in = TypeVar("T_in", np.float64, np.int64)
+T_in = TypeVar("T_in", np.float64, np.int_)
 
 
 @attr.frozen(kw_only=True)
@@ -54,7 +54,7 @@ class VectorizedDistribution(Algebra, Generic[T_in]):
     @is_continuous.validator  # type: ignore
     def check_is_continuous(self, _: Literal["is_continuous"], is_continuous_value: bool) -> None:
         match self.sample.dtype:
-            case np.int64:
+            case np.int_:
                 assert not is_continuous_value
             case np.float64:
                 assert is_continuous_value
@@ -238,7 +238,7 @@ class UnivariateDistribution(Algebra, Generic[T_in]):
     Other Params: Implementation details
        * If `is_continuous` is set to True, then `T_in` should be a "continuous" type like
          `float` or `numpy.float64`. If it is set to False, then `T_in` should be a discrete
-         type like `int` or `numpy.int64`.
+         type like `int` or `numpy.int_`.
        * We set `frozen=True` to enforce immutability of each subclass and each instance of
          this class.
        * We set `unsafe_hash=True` to make this class hashable (it is immutable
@@ -246,9 +246,10 @@ class UnivariateDistribution(Algebra, Generic[T_in]):
     """
     @property
     def is_continuous(self) -> bool:
-        T_in_at_runtime: type = get_args(self.__orig_bases__[0])[0]
+        assert hasattr(self, "__orig_bases__")
+        T_in_at_runtime: type = get_args(self.__orig_bases__[0])[0]  # pyright: ignore
         match T_in_at_runtime:
-            case np.int_ | np.int64:
+            case np.int_ | np.int_:
                 return False
             case np.float64:
                 return True
@@ -265,7 +266,7 @@ class UnivariateDistribution(Algebra, Generic[T_in]):
 
     @property
     @abstractmethod
-    def support(self) -> tuple[float, float]: ...
+    def support(self) -> tuple[int | float, int | float]: ...
 
     @abstractmethod
     def draw(self, size: int) -> NDArray[T_in]: ...
@@ -281,7 +282,7 @@ class UnivariateDistribution(Algebra, Generic[T_in]):
             is_continuous=self.is_continuous)
 
     @abstractmethod
-    def pdf(self, linspace: NDArray[np.float64] | NDArray[np.int64]) -> NDArray[np.float64]: ...
+    def pdf(self, linspace: NDArray[np.float64] | NDArray[np.int_]) -> NDArray[np.float64]: ...
 
     def __add__(self, other: Any) -> Any:
         match other:

@@ -19,7 +19,7 @@ INIT_BETA = 1
 fig: plt.figure.Figure  # type: ignore
 ax: plt.axes.Axes  # type: ignore
 fig, ax = plt.subplots()
-line, = ax.plot(LINX, Beta(alpha=INIT_ALPHA, beta=INIT_BETA).pdf(LINX), lw=3)
+line, = ax.plot(LINX, Beta(alpha=INIT_ALPHA, beta=INIT_BETA).pdf(LINX), lw=3)  # pyright: ignore
 ax.set_ylim(0, 4)
 ax.set_xlabel('x')
 ax.set_ylabel('Probability density')

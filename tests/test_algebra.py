@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from random import random, randint
+from random import randint, random
 from typing import TypeAlias
 
 import numpy as np
@@ -33,7 +33,7 @@ def randomly_chosen_distributions() -> dict[str,
         "VectorizedDistribution (continuous)": VectorizedDistribution(  # type: ignore
             sample=RNG.random(size=SAMPLE_SIZE), is_continuous=True),
         "VectorizedDistribution (discrete)": VectorizedDistribution(  # type: ignore
-            sample=RNG.integers(100, size=SAMPLE_SIZE), is_continuous=False),
+            sample=RNG.integers(100, size=SAMPLE_SIZE), is_continuous=False),  # type: ignore[arg-type]
         "Binomial": Binomial(n=randint(0, 100), p=random()),  # type: ignore
     }
 

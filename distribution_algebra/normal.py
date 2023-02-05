@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from math import inf, sqrt
-from typing import Annotated, Any, cast
+from typing import Any, cast
 
 import numpy as np
 import scipy
@@ -27,37 +27,37 @@ class Normal(UnivariateDistribution[np.float64]):
     def __add__(self, other: Any) -> Any:
         match other:
             case Normal():
-                return Normal(mean=self.mean + other.mean, var=self.var + other.var)
+                return Normal(mean=self.mean + other.mean, var=self.var + other.var)  # pyright: ignore
             case int() | float():
-                return Normal(mean=self.mean + other, var=self.var)
+                return Normal(mean=self.mean + other, var=self.var)  # pyright: ignore
             case _:
                 return super().__add__(other)
 
     def __mul__(self, other: Any) -> Any:
         match other:
             case int() | float():
-                return Normal(mean=self.mean * other, var=self.var * other**2)
+                return Normal(mean=self.mean * other, var=self.var * other**2)  # pyright: ignore
             case _:
                 return super().__mul__(other)
 
     def __sub__(self, other: Any) -> Any:
         match other:
             case Normal():
-                return Normal(mean=self.mean - other.mean, var=self.var + other.var)
+                return Normal(mean=self.mean - other.mean, var=self.var + other.var)  # pyright: ignore
             case int() | float():
-                return Normal(mean=self.mean - other, var=self.var)
+                return Normal(mean=self.mean - other, var=self.var)  # pyright: ignore
             case _:
                 return super().__sub__(other)
 
     def __truediv__(self, other: Any) -> Any:
         match other:
             case int() | float():
-                return Normal(mean=self.mean / other, var=self.var / other**2)
+                return Normal(mean=self.mean / other, var=self.var / other**2)  # pyright: ignore
             case _:
                 return super().__truediv__(other)
 
     def __neg__(self) -> Self:
-        return Normal(mean=-self.mean, var=self.var)
+        return Normal(mean=-self.mean, var=self.var)  # pyright: ignore
 
     @property
     def median(self) -> float:
@@ -77,4 +77,4 @@ class Normal(UnivariateDistribution[np.float64]):
         sample_variance: float = sample.var()
         sample_length: int = len(sample)
         unbiased_variance = sample_length * sample_variance / (sample_length - 1)
-        return cls(mean=sample_mean, var=unbiased_variance)
+        return cls(mean=sample_mean, var=unbiased_variance)  # pyright: ignore

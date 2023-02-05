@@ -10,14 +10,16 @@ from attr import cmp_using, field, frozen, validators
 from numpy.typing import NDArray
 from typing_extensions import Self
 
-from distribution_algebra.config import RNG
+from distribution_algebra.config import ABS_TOL, RNG
 from distribution_algebra.distribution import UnivariateDistribution
 
 
 @frozen(kw_only=True)
 class Lognormal(UnivariateDistribution[np.float64]):
-    mean: float = field(validator=validators.gt(0.0), eq=cmp_using(eq=lambda a, b: isclose(a, b, rel_tol=1e-6, abs_tol=1e-6)))
-    var: float = field(validator=validators.gt(0.0), eq=cmp_using(eq=lambda a, b: isclose(a, b, rel_tol=1e-6, abs_tol=1e-6)))
+    mean: float = field(validator=validators.gt(0.0),
+                        eq=cmp_using(eq=lambda a, b: isclose(a, b, abs_tol=ABS_TOL)))  # pyright: ignore
+    var: float = field(validator=validators.gt(0.0),
+                       eq=cmp_using(eq=lambda a, b: isclose(a, b, abs_tol=ABS_TOL)))  # pyright: ignore
 
     @property
     def normal_mean(self) -> float:
@@ -44,7 +46,7 @@ class Lognormal(UnivariateDistribution[np.float64]):
     def from_normal_mean_var(cls, μ: float, σ̂2: float) -> Self:
         var = expm1(σ̂2) * exp(2*μ + σ̂2)
         assert isfinite(var)
-        return cls(mean=exp(μ + σ̂2 / 2), var=expm1(σ̂2) * exp(2*μ + σ̂2))
+        return cls(mean=exp(μ + σ̂2 / 2), var=expm1(σ̂2) * exp(2*μ + σ̂2))  # pyright: ignore
 
     def draw(self, size: int) -> NDArray[np.float64]:
         return RNG.lognormal(mean=self.normal_mean, sigma=sqrt(self.normal_var), size=size)

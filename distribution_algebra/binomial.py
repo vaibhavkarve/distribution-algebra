@@ -1,25 +1,23 @@
 #!/usr/bin/env python3
 
-from dataclasses import field
 from math import floor, inf
 from typing import Any
-from numbers import Real
 
 import numpy as np
 import scipy
-from attr import field, frozen, validators
+import attr
 from numpy.typing import NDArray
 
 from distribution_algebra.config import RNG
 from distribution_algebra.distribution import UnivariateDistribution
 
 
-@frozen(kw_only=True)
-class Binomial(UnivariateDistribution[np.int64]):
+@attr.frozen(kw_only=True)
+class Binomial(UnivariateDistribution[np.int_]):
     # Total number of trials with yes-or-no questions.
-    n: int = field(validator=validators.ge(0))
+    n: int = attr.field(validator=attr.validators.ge(0))
     # Probability of yes/success outcome.
-    p: float = field(validator=[validators.ge(0.0), validators.le(1.0)])
+    p: float = attr.field(validator=[attr.validators.ge(0.0), attr.validators.le(1.0)])
 
     def draw(self, size: int) -> NDArray[np.int_]:
         return RNG.binomial(n=self.n, p=self.p, size=size)
@@ -41,7 +39,7 @@ class Binomial(UnivariateDistribution[np.int64]):
         return round(self.n * self.p)
 
     @property
-    def mode(self) -> int:
+    def mode(self) -> int:  # type: ignore[return]
         np_plus_p: float = (self.n + 1) * self.p
         match np_plus_p:
             case 0:
@@ -56,6 +54,7 @@ class Binomial(UnivariateDistribution[np.int64]):
                 return floor(np_plus_p)
             case _:
                 raise RuntimeError("{self.n = }, {self.p = } slipped through the match-case.")
+
 
     @property
     def support(self) -> tuple[int, float]:

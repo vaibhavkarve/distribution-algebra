@@ -1,20 +1,19 @@
 #!/usr/bin/env python3
-from dataclasses import field
 from math import floor, inf
 from typing import Any
 
+import attr
 import numpy as np
 import scipy
-from attr import field, frozen, validators
 from numpy.typing import NDArray
 
 from distribution_algebra.config import RNG
 from distribution_algebra.distribution import UnivariateDistribution
 
 
-@frozen(kw_only=True)
-class Poisson(UnivariateDistribution[np.int64]):
-    lam: float = field(validator=validators.gt(0.0))  # rate parameter.
+@attr.frozen(kw_only=True)
+class Poisson(UnivariateDistribution[np.int_]):
+    lam: float = attr.field(validator=attr.validators.gt(0.0))  # rate parameter.
 
     def draw(self, size: int) -> NDArray[np.int_]:
         return RNG.poisson(lam=self.lam, size=size)
@@ -44,7 +43,7 @@ class Poisson(UnivariateDistribution[np.int64]):
     def __add__(self, other: Any) -> Any:
         match other:
             case Poisson():
-                return Poisson(lam=self.lam + other.lam)
+                return Poisson(lam=self.lam + other.lam)  # pyright: ignore
             case _:
                 return super().__add__(other)
 

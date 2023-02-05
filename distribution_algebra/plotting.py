@@ -71,8 +71,8 @@ def plot_all_distributions() -> None:
 
     # Normal distributions.
     ax: plt.Axes = axes[0][0]  # type: ignore
-    a: Normal = Normal(mean=-5.0, var=9.0)
-    b: Normal = Normal(mean=1.0, var=4.0)
+    a: Normal = Normal(mean=-5.0, var=9.0)  # pyright: ignore
+    b: Normal = Normal(mean=1.0, var=4.0)  # pyright: ignore
     plot(a, ax=ax, label=f"{a}")
     b_plot = plot(b, ax=ax, label=f"{b}")
     b_plot[0].set_label("Prob. density func.")
@@ -80,15 +80,15 @@ def plot_all_distributions() -> None:
 
     # Lognormal distributions.
     ax = axes[0][1]
-    l1: Lognormal = Lognormal(mean=10, var=10.0)
+    l1: Lognormal = Lognormal(mean=10, var=10.0)  # pyright: ignore
     l1_plot = plot(l1, ax=ax, label=f"{l1}")
     l1_plot[0].set_label("Prob. density func.")
     ax.legend()
 
     # Beta distributions.
     ax = axes[0][2]
-    b1: Beta = Beta(alpha=1, beta=1)
-    b2: Beta = Beta(alpha=9, beta=3)
+    b1: Beta = Beta(alpha=1, beta=1)  # pyright: ignore
+    b2: Beta = Beta(alpha=9, beta=3)  # pyright: ignore
     plot(b1, ax=ax, label=f"{b1}")
     b2_plot = plot(b2, ax=ax, label=f"{b2}")
     b2_plot[0].set_label("Prob. density func.")
@@ -97,21 +97,21 @@ def plot_all_distributions() -> None:
     # Poisson distributions.
     ax = axes[1][0]
     ax.set_xticks(range(20))
-    p1: Poisson = Poisson(lam=4)
+    p1: Poisson = Poisson(lam=4)  # pyright: ignore
     p1_plot = plot(p1, ax=ax, label=f"{p1}")
     p1_plot[0].set_label("Prob. mass func.")
     ax.legend()
 
     # Beta4 distributions.
     ax = axes[1][1]
-    b41: Beta4 = Beta4(alpha=9, beta=3, minimum=5, maximum=8)
+    b41: Beta4 = Beta4(alpha=9, beta=3, minimum=5, maximum=8)  # pyright: ignore
     b41_plot = plot(b41, ax=ax, label="\n".join(wrap(f"{b41}", width=30)))
     b41_plot[0].set_label("Prob. density func.")
     ax.legend()
 
     # Binomial distributions.
     ax = axes[1][2]
-    binom: Binomial = Binomial(n=16, p=0.5)
+    binom: Binomial = Binomial(n=16, p=0.5)  # pyright: ignore
     binom_plot = plot(binom, ax=ax, label=f"{binom}")
     binom_plot[0].set_label("Prob. mass func.")
     ax.legend()
