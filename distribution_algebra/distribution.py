@@ -252,9 +252,9 @@ class UnivariateDistribution(Algebra, Generic[T_in]):
         continuity (or discreteness) of its support space. This is
         captured by the Generic type variable `T_in`. If the
         distribution is continuous (like `Normal <:
-        UnivariateDistribution[np.float64]`, the this property returns
+        UnivariateDistribution[numpy.float64]`, the this property returns
         True. If the distribution is discrete (like `Binomial <:
-        UnivariateDistribution[np.int_]`, then this property is False.
+        UnivariateDistribution[numpy.int_]`, then this property is False.
 
         """
         assert hasattr(self, "__orig_bases__")
@@ -283,27 +283,79 @@ class UnivariateDistribution(Algebra, Generic[T_in]):
         """Return the (min, max) range of the distribution's support interval.
 
         In some cases, if one of the support ends is positive or
-        negative infinity, we use the closest value expressible to
-        infinity while using a constrained `T_in` type.
+        negative infinity, we use the closest value to infinity
+        expressible while using a constrained `T_in` type.
+
         """
 
     @abstractmethod
-    def draw(self, size: int) -> NDArray[T_in]: ...
+    def draw(self, size: int) -> NDArray[T_in]:
+        """Draw a random sample of given `size` from the distribution.
+
+        For efficiently drawing many random numbers from a
+        distribution with fixed parameters, it is recommended that
+        this method be used with the appropriate `size` instead of
+        drawing `size=1` samples inside a separate loop.
+
+        Note:
+           Not to be confused with `distribution_algebra.plotter.plot`
+           method which is used for plotting a distribution's graph.
+
+        Implementation detail:
+           This method should always use numpy's `default_rng` and its
+           associated methods for drawing random samples from various
+           distributions.
+
+        """
 
     def to_vectorized(self) -> VectorizedDistribution[T_in]:
-        """In most cases, if using  `(x: UnivariateDistribution).to_vectorized()`
-        to create a `VectorizedDistribution` instance, the instance's `is_continuous`
-        parameter is equal to `x.is_continuous`. In other words, continuous
-        (discrete) univariate distributions give rise to continuous (discrete)
-        vectorized distributions."""
+        """Convert to a `VectorizedDistribution`.
+
+        This method is called internally when we perform algebraic
+        operations on distributions whose closed-form expressions are
+        not known.
+
+        Note:
+           In most cases, if using `(x:
+           UnivariateDistribution).to_vectorized()` to create a
+           `VectorizedDistribution` instance, the instance's
+           `is_continuous` parameter is equal to `x.is_continuous`. In
+           other words, continuous (discrete) univariate distributions
+           give rise to continuous (discrete) vectorized
+           distributions.
+
+        """
         return VectorizedDistribution(  # type: ignore
             sample=self.draw(size=SAMPLE_SIZE),
             is_continuous=self.is_continuous)
 
     @abstractmethod
-    def pdf(self, linspace: NDArray[np.float64] | NDArray[np.int_]) -> NDArray[np.float64]: ...
+    def pdf(self, linspace: NDArray[T_in]) -> NDArray[np.float64]:
+        """Return the probability density (or mass) function's values at the given domain points.
+
+        Implementation detail:
+           This method usually uses scipy's statistical distribution's
+           probability density/mass functions.
+
+        In the case of continuous (or discrete) distributions, this
+        function accepts a parameter vector of points in
+        `numpy.float64` (or `numpy.int_`) space. While the function's
+        implementation does not put any constraints on the input
+        vector, the user can usually generate an appropriate input by
+        using `numpy.linspace` or `numpy.arange`.
+
+        """
 
     def __add__(self, other: Any) -> Any:
+        """Return the left-sum of a UnivatiateDistribution with any other type.
+
+        Types:
+           - `UnivariateDistribution + UnivariateDistribution`: the result is the sum of
+             the vectorized versions of the two distributions.
+           - `UnivariateDistribution + Any`: the left-parameter is vectorized and then
+             added to the right-parameter.
+
+        """
         match other:
             case UnivariateDistribution():
                 return self.to_vectorized() + other.to_vectorized()
@@ -311,6 +363,14 @@ class UnivariateDistribution(Algebra, Generic[T_in]):
                 return self.to_vectorized() + other
 
     def __mul__(self, other: Any) -> Any:
+        """Return the left-product of a UnivariateDistribution with any other type.
+
+        Types:
+           - `UnivariateDistribution * UnivariateDistribution`: the result is the product of
+             the vectorized versions of the two distributions.
+           - `UnivariateDistribution * Any`: the left-parameter is vectorized and then
+             multiplied by the right-parameter.
+        """
         match other:
             case UnivariateDistribution():
                 return self.to_vectorized() * other.to_vectorized()
@@ -318,6 +378,14 @@ class UnivariateDistribution(Algebra, Generic[T_in]):
                 return self.to_vectorized() * other
 
     def __sub__(self, other: Any) -> Any:
+        """Return the left-difference of a UnivariateDistribution with any other type.
+
+        Types:
+           - `UnivariateDistribution - UnivariateDistribution`: the result is the
+             difference of the vectorized versions of the two distributions.
+           - `UnivariateDistribution - Any`: the left-parameter is vectorized and then
+             the right-parameter is subtracted from it.
+        """
         match other:
             case UnivariateDistribution():
                 return self.to_vectorized() - other.to_vectorized()
@@ -325,6 +393,15 @@ class UnivariateDistribution(Algebra, Generic[T_in]):
                 return self.to_vectorized() - other
 
     def __truediv__(self, other: Any) -> Any:
+        """Return the left-division of a UnivariateDistribution with any other type.
+
+        Types:
+           - `UnivariateDistribution / UnivariateDistribution`: the result is the
+             ratio of the vectorized versions of the two distributions.
+           - `UnivariateDistribution / Any`: the left-parameter is vectorized and then
+             divided by the right-parameter.
+
+        """
         match other:
             case UnivariateDistribution():
                 return self.to_vectorized() / other.to_vectorized()
@@ -332,6 +409,15 @@ class UnivariateDistribution(Algebra, Generic[T_in]):
                 return self.to_vectorized() / other
 
     def __pow__(self, other: Any) -> Any:
+        """Return the left-power of a VectorDistribution with any other type.
+
+        Types:
+           - `UnivariateDistribution ** UnivariateDistribution`: the result is the
+              vectorized version of the first distribution raised to the power  of the two distributions.
+           - `UnivariateDistribution ** Any`: the left-parameter is vectorized and then
+             raised to the right-parameter.
+
+        """
         match other:
             case UnivariateDistribution():
                 return self.to_vectorized() ** other.to_vectorized()
