@@ -3,12 +3,12 @@
 from math import floor
 from typing import Any
 
+import attr
 import numpy as np
 import scipy
-import attr
 from numpy.typing import NDArray
 
-from distribution_algebra.config import RNG
+from distribution_algebra.config import Config
 from distribution_algebra.distribution import UnivariateDistribution
 
 
@@ -20,7 +20,7 @@ class Binomial(UnivariateDistribution[np.int_]):
     p: float = attr.field(validator=[attr.validators.ge(0.0), attr.validators.le(1.0)])
 
     def draw(self, size: int) -> NDArray[np.int_]:
-        return RNG.binomial(n=self.n, p=self.p, size=size)
+        return Config.rng.binomial(n=self.n, p=self.p, size=size)
 
     @property
     def mean(self) -> float:
@@ -53,16 +53,16 @@ class Binomial(UnivariateDistribution[np.int_]):
             case _ if not np_plus_p.is_integer():
                 return floor(np_plus_p)
             case _:
-                raise RuntimeError("{self.n = }, {self.p = } slipped through the match-case.")
-
+                raise RuntimeError(
+                    "{self.n = }, {self.p = } slipped through the match-case."
+                )
 
     @property
     def support(self) -> tuple[np.int_, np.int_]:
         return np.int_(0), np.int_(np.iinfo(np.int_).max)  # max = np.inf.
 
     def pdf(self, arange: NDArray[np.int_]) -> NDArray[np.float64]:  # type: ignore
-        return scipy.stats.binom.pmf(  # type: ignore
-            k=arange, n=self.n, p=self.p)
+        return scipy.stats.binom.pmf(k=arange, n=self.n, p=self.p)  # type: ignore
 
     def __add__(self, other: Any) -> Any:
         match other:

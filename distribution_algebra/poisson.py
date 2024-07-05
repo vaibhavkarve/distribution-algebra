@@ -7,7 +7,7 @@ import numpy as np
 import scipy
 from numpy.typing import NDArray
 
-from distribution_algebra.config import RNG
+from distribution_algebra.config import Config
 from distribution_algebra.distribution import UnivariateDistribution
 
 
@@ -16,7 +16,7 @@ class Poisson(UnivariateDistribution[np.int_]):
     lam: float = attr.field(validator=attr.validators.gt(0.0))  # rate parameter.
 
     def draw(self, size: int) -> NDArray[np.int_]:
-        return RNG.poisson(lam=self.lam, size=size)
+        return Config.rng.poisson(lam=self.lam, size=size)
 
     @property
     def mean(self) -> float:
@@ -28,7 +28,7 @@ class Poisson(UnivariateDistribution[np.int_]):
 
     @property
     def median(self) -> float:
-        return floor(self.lam + 1/3 - 1/(50 * self.lam))
+        return floor(self.lam + 1 / 3 - 1 / (50 * self.lam))
 
     @property
     def mode(self) -> float:
@@ -37,8 +37,7 @@ class Poisson(UnivariateDistribution[np.int_]):
         return NotImplemented
 
     def pdf(self, arange: NDArray[np.int_]) -> NDArray[np.float64]:  # type: ignore
-        return scipy.stats.poisson.pmf(  # type: ignore
-            arange, mu=self.lam)
+        return scipy.stats.poisson.pmf(arange, mu=self.lam)  # type: ignore
 
     def __add__(self, other: Any) -> Any:
         match other:

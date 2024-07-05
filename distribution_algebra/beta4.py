@@ -24,7 +24,10 @@ class Beta4(UnivariateDistribution[np.float64]):
         return Beta(alpha=self.alpha, beta=self.beta)  # pyright: ignore
 
     def draw(self, size: int) -> NDArray[np.float64]:
-        return self.beta_of_alpha_beta().draw(size=size) * (self.maximum - self.minimum) + self.minimum
+        return (
+            self.beta_of_alpha_beta().draw(size=size) * (self.maximum - self.minimum)
+            + self.minimum
+        )
 
     def pdf(self, linspace: NDArray[np.float64]) -> NDArray[np.float64]:  # type: ignore
         linspace = (linspace - self.minimum) / (self.maximum - self.minimum)
@@ -32,19 +35,28 @@ class Beta4(UnivariateDistribution[np.float64]):
 
     @property
     def mean(self) -> float:
-        return self.beta_of_alpha_beta().mean * (self.maximum - self.minimum) + self.minimum
+        return (
+            self.beta_of_alpha_beta().mean * (self.maximum - self.minimum)
+            + self.minimum
+        )
 
     @property
     def var(self) -> float:
-        return self.beta_of_alpha_beta().var * (self.maximum - self.minimum)**2
+        return self.beta_of_alpha_beta().var * (self.maximum - self.minimum) ** 2
 
     @property
     def median(self) -> float:
-        return self.beta_of_alpha_beta().median * (self.maximum - self.minimum) + self.minimum
+        return (
+            self.beta_of_alpha_beta().median * (self.maximum - self.minimum)
+            + self.minimum
+        )
 
     @property
     def mode(self) -> float:
-        return self.beta_of_alpha_beta().mode * (self.maximum - self.minimum) + self.minimum
+        return (
+            self.beta_of_alpha_beta().mode * (self.maximum - self.minimum)
+            + self.minimum
+        )
 
     @property
     def support(self) -> tuple[np.float64, np.float64]:

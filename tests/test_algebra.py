@@ -11,7 +11,7 @@ from hypothesis import strategies as st
 from distribution_algebra.beta import Beta
 from distribution_algebra.beta4 import Beta4
 from distribution_algebra.binomial import Binomial
-from distribution_algebra.config import RNG, SAMPLE_SIZE
+from distribution_algebra.config import Config
 from distribution_algebra.distribution import (UnivariateDistribution,
                                                VectorizedDistribution)
 from distribution_algebra.lognormal import Lognormal
@@ -19,10 +19,15 @@ from distribution_algebra.normal import Normal
 from distribution_algebra.poisson import Poisson
 
 
-def randomly_chosen_distributions() -> dict[str,
-                                            UnivariateDistribution[np.float64]
-                                            | UnivariateDistribution[np.int_]
-                                            | VectorizedDistribution[np.float64] | float]:
+def randomly_chosen_distributions() -> (
+    dict[
+        str,
+        UnivariateDistribution[np.float64]
+        | UnivariateDistribution[np.int_]
+        | VectorizedDistribution[np.float64]
+        | float,
+    ]
+):
     return {
         "float": random(),
         "Normal": Normal(mean=random(), var=random()),  # type: ignore
@@ -31,16 +36,21 @@ def randomly_chosen_distributions() -> dict[str,
         "Poisson": Poisson(lam=random()),  # type: ignore
         "Beta4": Beta4(alpha=random(), beta=random(), minimum=random(), maximum=random() + 1),  # type: ignore
         "VectorizedDistribution (continuous)": VectorizedDistribution(  # type: ignore
-            sample=RNG.random(size=SAMPLE_SIZE), is_continuous=True),
+            sample=Config.rng.random(size=Config.sample_size), is_continuous=True
+        ),
         "VectorizedDistribution (discrete)": VectorizedDistribution(  # type: ignore
-            sample=RNG.integers(100, size=SAMPLE_SIZE), is_continuous=False),  # type: ignore[arg-type]
+            sample=Config.rng.integers(100, size=Config.sample_size), # type: ignore[arg-type]
+            is_continuous=False
+        ),
         "Binomial": Binomial(n=randint(0, 100), p=random()),  # type: ignore
     }
 
 
 def test_distrint_random_choices() -> None:
-    for dist1, dist2 in zip(randomly_chosen_distributions().values(),
-                            randomly_chosen_distributions().values()):
+    for dist1, dist2 in zip(
+        randomly_chosen_distributions().values(),
+        randomly_chosen_distributions().values(),
+    ):
         assert dist1 != dist2
 
 
@@ -59,8 +69,9 @@ def test_operations(data: st.DataObject) -> None:
     # Lognormal * Lognormal ~ Lognormal
     a: Lognormal = data.draw(st.from_type(Lognormal))
     b: Lognormal = data.draw(st.from_type(Lognormal))
-    assert a * b == Lognormal.from_normal_mean_var(a.normal_mean + b.normal_mean,
-                                                   a.normal_var + b.normal_var)
+    assert a * b == Lognormal.from_normal_mean_var(
+        a.normal_mean + b.normal_mean, a.normal_var + b.normal_var
+    )
 
     # 1 - Beta(α, β) ~ Beta(β, α)
     c: Beta = data.draw(st.from_type(Beta))
@@ -73,28 +84,40 @@ def test_operations(data: st.DataObject) -> None:
     assert Binomial(n=n, p=p) + Binomial(n=m, p=p) == Binomial(n=n + m, p=p)  # type: ignore
 
 
-UnivariateUnion: TypeAlias = \
+UnivariateUnion: TypeAlias = (
     UnivariateDistribution[np.float64] | UnivariateDistribution[np.int_]
-VectorizedUnion: TypeAlias = \
+)
+VectorizedUnion: TypeAlias = (
     VectorizedDistribution[np.float64] | VectorizedDistribution[np.int_]
+)
 DistributionUnion: TypeAlias = UnivariateUnion | VectorizedUnion  # type: ignore[operator]
 
 
 @pytest.mark.filterwarnings("ignore::UserWarning")
 @pytest.mark.filterwarnings("ignore:invalid value encountered in power:RuntimeWarning")
 @pytest.mark.filterwarnings("ignore:divide by zero encountered in power:RuntimeWarning")
-@pytest.mark.filterwarnings("ignore:divide by zero encountered in divide:RuntimeWarning")
+@pytest.mark.filterwarnings(
+    "ignore:divide by zero encountered in divide:RuntimeWarning"
+)
 @pytest.mark.filterwarnings("ignore:invalid value encountered in divide:RuntimeWarning")
-@pytest.mark.parametrize("dist1", randomly_chosen_distributions().values(),
-                         ids=randomly_chosen_distributions().keys())
-@pytest.mark.parametrize("dist2", randomly_chosen_distributions().values(),  # type: ignore
-                         ids=randomly_chosen_distributions().keys())
-def test_all_pairwise_combinations(dist1: DistributionUnion, dist2: DistributionUnion) -> None:
+@pytest.mark.parametrize(
+    "dist1",
+    randomly_chosen_distributions().values(),
+    ids=randomly_chosen_distributions().keys(),
+)
+@pytest.mark.parametrize(
+    "dist2",
+    randomly_chosen_distributions().values(),  # type: ignore
+    ids=randomly_chosen_distributions().keys(),
+)
+def test_all_pairwise_combinations(
+    dist1: DistributionUnion, dist2: DistributionUnion
+) -> None:
     addition: UnivariateUnion | VectorizedUnion = dist1 + dist2
     multiplication: UnivariateUnion | VectorizedUnion = dist1 * dist2
     subtraction: UnivariateUnion | VectorizedUnion = dist1 - dist2
     division: UnivariateUnion | VectorizedUnion = dist1 / dist2
-    power: UnivariateUnion | VectorizedUnion = dist1 ** dist2
+    power: UnivariateUnion | VectorizedUnion = dist1**dist2
     match dist1, dist2:
         case float(), float():
             assert isinstance(addition, float)
@@ -140,10 +163,13 @@ def test_all_pairwise_combinations(dist1: DistributionUnion, dist2: Distribution
             assert isinstance(power, VectorizedDistribution)
 
 
-@pytest.mark.parametrize("dist", randomly_chosen_distributions().values(),
-                         ids=randomly_chosen_distributions().keys())
+@pytest.mark.parametrize(
+    "dist",
+    randomly_chosen_distributions().values(),
+    ids=randomly_chosen_distributions().keys(),
+)
 def test_all_unary_operations(dist: DistributionUnion) -> None:
-    negative: UnivariateUnion | VectorizedUnion = - dist
+    negative: UnivariateUnion | VectorizedUnion = -dist
     match dist:
         case float():
             assert isinstance(negative, float)
@@ -153,3 +179,10 @@ def test_all_unary_operations(dist: DistributionUnion) -> None:
             assert isinstance(negative, VectorizedDistribution)
         case _:
             assert isinstance(negative, VectorizedDistribution)
+
+
+def test_chagees_to_sample_size() -> None:
+    normal = Normal(mean=0, var=1)
+    assert normal.to_vectorized().sample.shape == (Config.sample_size,)
+    Config.sample_size = 10
+    assert normal.to_vectorized().sample.shape == (10,)

@@ -7,7 +7,7 @@ import scipy
 from attr import field, frozen, validators
 from numpy.typing import NDArray
 
-from distribution_algebra.config import RNG
+from distribution_algebra.config import Config
 from distribution_algebra.distribution import UnivariateDistribution
 
 
@@ -17,11 +17,15 @@ class Beta(UnivariateDistribution[np.float64]):
     beta: float = field(validator=validators.gt(0.0))
 
     def draw(self, size: int) -> NDArray[np.float64]:
-        return RNG.beta(a=self.alpha, b=self.beta, size=size)
+        return Config.rng.beta(a=self.alpha, b=self.beta, size=size)
 
     def pdf(self, linspace: NDArray[np.float64]) -> NDArray[np.float64]:  # type: ignore
-        return cast(NDArray[np.float64], scipy.stats.beta.pdf(  # pyright: ignore[reportUnknownVariableType]
-            x=linspace, a=self.alpha, b=self.beta))
+        return cast(
+            NDArray[np.float64],
+            scipy.stats.beta.pdf(  # pyright: ignore[reportUnknownVariableType]
+                x=linspace, a=self.alpha, b=self.beta
+            ),
+        )
 
     @property
     def mean(self) -> float:
@@ -31,12 +35,12 @@ class Beta(UnivariateDistribution[np.float64]):
     def var(self) -> float:
         α: float = self.alpha
         β: float = self.beta
-        return α * β / (α + β)**2 / (α + β + 1)
+        return α * β / (α + β) ** 2 / (α + β + 1)
 
     @property
     def median(self) -> float:
         if self.alpha >= 1 and self.beta >= 1:
-            return (self.alpha - 1/3) * (self.alpha + self.beta - 2/3)
+            return (self.alpha - 1 / 3) * (self.alpha + self.beta - 2 / 3)
         return NotImplemented
 
     @property

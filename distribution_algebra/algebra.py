@@ -23,6 +23,7 @@ class Algebra:
     Note:
        This class is for internal use only.
     """
+
     @abstractmethod
     def __add__(self, other: Any) -> Any:
         """An abstract left-addition method."""
@@ -60,10 +61,13 @@ def Algebra_reverse_op(op_name: str) -> Callable[[Algebra, Any], Any]:
     Note:
        This function is for internal use only.
     """
+
     def self_op_other(self: Algebra, other: Any) -> Any:
         """Reverse operation is just the operation acting on the arguments."""
         return getattr(self, op_name)(other)
+
     return self_op_other
+
 
 def define_right_operators_for_Algebra_class() -> None:
     """Define a right-operator method for each of `Algebra`'s magic methods.
@@ -74,10 +78,16 @@ def define_right_operators_for_Algebra_class() -> None:
 
     """
     magic_left_operator_methods: list[str] = [
-        "__add__", "__mul__", "__sub__", "__truediv__", "__pow__"]
+        "__add__",
+        "__mul__",
+        "__sub__",
+        "__truediv__",
+        "__pow__",
+    ]
 
     for magic_method in magic_left_operator_methods:
         right_operator_name: str = "__r" + magic_method.removeprefix("__")
         setattr(Algebra, right_operator_name, final(Algebra_reverse_op(magic_method)))
+
 
 define_right_operators_for_Algebra_class()

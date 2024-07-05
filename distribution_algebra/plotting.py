@@ -14,7 +14,7 @@ from numpy.typing import NDArray
 from distribution_algebra.beta import Beta
 from distribution_algebra.beta4 import Beta4
 from distribution_algebra.binomial import Binomial
-from distribution_algebra.config import SAMPLE_SIZE, SUPPORT_MAX, SUPPORT_MIN
+from distribution_algebra.config import Config
 from distribution_algebra.distribution import (T_in, UnivariateDistribution,
                                                VectorizedDistribution)
 from distribution_algebra.lognormal import Lognormal
@@ -23,45 +23,57 @@ from distribution_algebra.poisson import Poisson
 
 
 @singledispatch
-def plot(*_: Any, ax: None | plt.Axes=None, **kwargs: Any) -> Any:  # pyright: ignore
+def plot(*_: Any, ax: None | plt.Axes = None, **kwargs: Any) -> Any:  # pyright: ignore
     raise NotImplementedError
+
 
 @plot.register(UnivariateDistribution)
 def plot_univariate_distribution(
-        udist: UnivariateDistribution[T_in],
-        ax: None | plt.Axes = None,  # type: ignore
-        **kwargs: Any) -> list[Line2D]:
+    udist: UnivariateDistribution[T_in],
+    ax: None | plt.Axes = None,  # type: ignore
+    **kwargs: Any,
+) -> list[Line2D]:  # pyright: ignore
     ax = ax or plt.gca()
     plot_vectorized_distribution(udist.to_vectorized(), ax=ax, **kwargs)
     if not udist.is_continuous:
         arange: NDArray[np.float64] = np.arange(
-            start=max(udist.support[0], SUPPORT_MIN),  # type: ignore[type-var]
-            stop=min(udist.support[1], SUPPORT_MAX))  # type: ignore[type-var]
+            start=max(udist.support[0], Config.support_min),  # type: ignore[type-var]
+            stop=min(udist.support[1], Config.support_max),  # type: ignore[type-var]
+        )  # type: ignore[type-var]
         return ax.plot(arange, udist.pdf(arange), "o", color="r")  # type: ignore
     linspace: NDArray[np.float64] = np.linspace(  # type: ignore[call-overload]
-        start=max(udist.support[0], SUPPORT_MIN),  # type: ignore[type-var]
-        stop=min(udist.support[1], SUPPORT_MAX),  # type: ignore[type-var]
-        num=SAMPLE_SIZE)
+        start=max(udist.support[0], Config.support_min),  # type: ignore[type-var]
+        stop=min(udist.support[1], Config.support_max),  # type: ignore[type-var]
+        num=Config.sample_size,
+    )
     return ax.plot(linspace, udist.pdf(linspace), color="r")  # type: ignore
 
 
 @plot.register(VectorizedDistribution)
 def plot_vectorized_distribution(
-        vdist: VectorizedDistribution[T_in],
-        ax: None | plt.Axes = None,  # type: ignore
-        **kwargs: Any) -> tuple[NDArray[np.float64], NDArray[np.float64], list[Polygon]]:
+    vdist: VectorizedDistribution[T_in],
+    ax: None | plt.Axes = None,  # type: ignore
+    **kwargs: Any,
+) -> tuple[NDArray[np.float64], NDArray[np.float64], list[Polygon]]:
     ax = ax or plt.gca()
     assert ax is not None
 
     if not vdist.is_continuous:
-        sample_counter: counter[T_in] = counter(vdist.sample)
+        sample_counter: counter[T_in] = counter(vdist.sample)  # pyright: ignore
         x: NDArray[np.float64] = np.array(list(sample_counter.keys()), dtype=np.float64)
         heights: NDArray[np.float64] = np.array(
-            list(sample_counter.values()), dtype=np.float64) / len(vdist.sample)
-        return ax.bar(x, heights, alpha=0.25, align="center", width=0.2, **kwargs) # type: ignore
+            list(sample_counter.values()), dtype=np.float64  # pyright: ignore
+        ) / len(vdist.sample)
+        return ax.bar(x, heights, alpha=0.25, align="center", width=0.2, **kwargs)  # type: ignore
 
-    return ax.hist(vdist.sample, bins=100, alpha=0.25, density=True,  # type: ignore
-                   align="left", **kwargs)
+    return ax.hist(  # type: ignore[no-any-return]
+        vdist.sample,
+        bins=100,
+        alpha=0.25,
+        density=True,
+        align="left",
+        **kwargs,
+    )
 
 
 def plot_all_distributions() -> None:
@@ -121,5 +133,5 @@ def plot_all_distributions() -> None:
     plt.show()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     plot_all_distributions()

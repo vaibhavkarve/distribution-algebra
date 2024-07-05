@@ -10,16 +10,20 @@ from attr import cmp_using, field, frozen, validators
 from numpy.typing import NDArray
 from typing_extensions import Self
 
-from distribution_algebra.config import ABS_TOL, RNG
+from distribution_algebra.config import Config
 from distribution_algebra.distribution import UnivariateDistribution
 
 
 @frozen(kw_only=True)
 class Lognormal(UnivariateDistribution[np.float64]):
-    mean: float = field(validator=validators.gt(0.0),
-                        eq=cmp_using(eq=lambda a, b: isclose(a, b, abs_tol=ABS_TOL)))  # pyright: ignore
-    var: float = field(validator=validators.gt(0.0),
-                       eq=cmp_using(eq=lambda a, b: isclose(a, b, abs_tol=ABS_TOL)))  # pyright: ignore
+    mean: float = field(
+        validator=validators.gt(0.0),
+        eq=cmp_using(eq=lambda a, b: isclose(a, b, abs_tol=Config.abs_tol)),  # pyright: ignore
+    )
+    var: float = field(
+        validator=validators.gt(0.0),
+        eq=cmp_using(eq=lambda a, b: isclose(a, b, abs_tol=Config.abs_tol)),  # pyright: ignore
+    )
 
     @property
     def normal_mean(self) -> float:
@@ -44,32 +48,44 @@ class Lognormal(UnivariateDistribution[np.float64]):
 
     @classmethod
     def from_normal_mean_var(cls, μ: float, σ̂2: float) -> Self:
-        var = expm1(σ̂2) * exp(2*μ + σ̂2)
+        var = expm1(σ̂2) * exp(2 * μ + σ̂2)
         assert isfinite(var)
-        return cls(mean=exp(μ + σ̂2 / 2), var=expm1(σ̂2) * exp(2*μ + σ̂2))  # pyright: ignore
+        return cls(
+            mean=exp(μ + σ̂2 / 2), var=expm1(σ̂2) * exp(2 * μ + σ̂2)
+        )  # pyright: ignore
 
     def draw(self, size: int) -> NDArray[np.float64]:
-        return RNG.lognormal(mean=self.normal_mean, sigma=sqrt(self.normal_var), size=size)
+        return Config.rng.lognormal(
+            mean=self.normal_mean, sigma=sqrt(self.normal_var), size=size
+        )
 
     def pdf(self, linspace: NDArray[np.float64]) -> NDArray[np.float64]:  # type: ignore
-        return cast(NDArray[np.float64],
-                    scipy.stats.lognorm.pdf(  # pyright: ignore[reportUnknownVariableType]
-                        x=linspace, s=sqrt(self.normal_var),
-                        loc=0.0,
-                        scale=self.mean**2 / sqrt(self.mean**2 + self.var),
-            ))
+        return cast(
+            NDArray[np.float64],
+            scipy.stats.lognorm.pdf(  # pyright: ignore[reportUnknownVariableType]
+                x=linspace,
+                s=sqrt(self.normal_var),
+                loc=0.0,
+                scale=self.mean**2 / sqrt(self.mean**2 + self.var),
+            ),
+        )
 
     def __mul__(self, other: Any) -> Any:
         match other:
             case int() | float() if other > 0:
-                return Lognormal.from_normal_mean_var(self.normal_mean + log(other),
-                                                      self.normal_var)
+                return Lognormal.from_normal_mean_var(
+                    self.normal_mean + log(other), self.normal_var
+                )
             case int() | float():
-                raise ValueError(f"Can only multiply Lognormal distribution {self}"
-                                 f" with a positive number, not {other}.")
+                raise ValueError(
+                    f"Can only multiply Lognormal distribution {self}"
+                    f" with a positive number, not {other}."
+                )
             case Lognormal():
-                return Lognormal.from_normal_mean_var(self.normal_mean + other.normal_mean,
-                                                      self.normal_var + other.normal_var)
+                return Lognormal.from_normal_mean_var(
+                    self.normal_mean + other.normal_mean,
+                    self.normal_var + other.normal_var,
+                )
             case _:
                 return super().__mul__(other)
 
@@ -78,15 +94,18 @@ class Lognormal(UnivariateDistribution[np.float64]):
             case int() | float():
                 return self * (1 / other)
             case Lognormal():
-                return Lognormal.from_normal_mean_var(self.normal_mean - other.normal_mean,
-                                                      self.normal_var + other.normal_var)
+                return Lognormal.from_normal_mean_var(
+                    self.normal_mean - other.normal_mean,
+                    self.normal_var + other.normal_var,
+                )
             case _:
                 return super().__truediv__(other)
 
     def __pow__(self, other: Any) -> Any:
         match other:
             case int() | float():
-                return Lognormal.from_normal_mean_var(other * self.normal_mean,
-                                                      other**2 * self.normal_var)
+                return Lognormal.from_normal_mean_var(
+                    other * self.normal_mean, other**2 * self.normal_var
+                )
             case _:
                 return super().__pow__(other)

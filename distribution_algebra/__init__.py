@@ -10,7 +10,13 @@ from distribution_algebra.normal import Normal
 from distribution_algebra.poisson import Poisson
 
 # Declaring this silences mypy warning on `from distribution_algebra import Beta` etc.
-__all__ = ["Normal", "Lognormal", "Beta", "Poisson", "UnivariateDistribution",
-           "VectorizedDistribution"]
+__all__ = [
+    "Normal",
+    "Lognormal",
+    "Beta",
+    "Poisson",
+    "UnivariateDistribution",
+    "VectorizedDistribution",
+]
 
-logging.getLogger('matplotlib').setLevel(logging.ERROR)
+logging.getLogger("matplotlib").setLevel(logging.ERROR)
