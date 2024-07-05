@@ -23,7 +23,7 @@ from distribution_algebra.poisson import Poisson
 
 
 @singledispatch
-def plot(*_: Any, ax: None | plt.Axes = None, **kwargs: Any) -> Any:  # pyright: ignore
+def plot(*_: Any, ax: None | plt.Axes = None, **kwargs: Any) -> Any:  #type: ignore[name-defined]  # pyright: ignore
     raise NotImplementedError
 
 
@@ -66,7 +66,7 @@ def plot_vectorized_distribution(
         ) / len(vdist.sample)
         return ax.bar(x, heights, alpha=0.25, align="center", width=0.2, **kwargs)  # type: ignore
 
-    return ax.hist(  # type: ignore[no-any-return]
+    return ax.hist(  # type: ignore[no-any-return, return-value]
         vdist.sample,
         bins=100,
         alpha=0.25,
@@ -79,7 +79,7 @@ def plot_vectorized_distribution(
 def plot_all_distributions() -> None:
     plt.xkcd()
     axes: tuple[tuple[plt.Axes, ...], ...]  # type: ignore
-    _, axes = plt.subplots(2, 3, figsize=(16, 9))
+    _, axes = plt.subplots(2, 3, figsize=(16, 9))  # type: ignore[assignment]
 
     # Normal distributions.
     ax: plt.Axes = axes[0][0]  # type: ignore
@@ -128,7 +128,7 @@ def plot_all_distributions() -> None:
     binom_plot[0].set_label("Prob. mass func.")
     ax.legend()
 
-    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+    plt.tight_layout(rect=(0, 0.03, 1, 0.95))
     plt.suptitle("Plotting various univariate random distributions")
     plt.show()
 

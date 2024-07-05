@@ -55,11 +55,11 @@ amp_slider = Slider(
 
 
 # The function to be called anytime a slider's value changes
-def update(_: None) -> None:
+def update(_: float) -> None:
     line.set_ydata(
         Beta(
             alpha=cast(float, amp_slider.val),  # type: ignore
-            beta=cast(float, freq_slider.val),  # pyright: ignore
+            beta=freq_slider.val,  # pyright: ignore
         ).pdf(LINX)
     )  # type: ignore
     fig.canvas.draw_idle()
@@ -74,7 +74,7 @@ resetax = fig.add_axes([0.8, 0.025, 0.1, 0.04])
 button = Button(resetax, "Reset", hovercolor="0.975")
 
 
-def reset(_: None) -> None:
+def reset(_: matplotlib.backend_bases.Event) -> None:  # pyright: ignore[reportAttributeAccessIssue]
     freq_slider.reset()
     amp_slider.reset()
 
