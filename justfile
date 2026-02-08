@@ -13,23 +13,18 @@ install:
 # Update all packages. Create type-stubs.
 update:
     uv sync --all-extras --upgrade
-    uv run safety check
-    uv run pyright --verbose --createstub numpy
-    uv run pyright --verbose --createstub scipy
-    uv run pyright --verbose --createstub nptyping
-    uv run pyright --verbose --createstub matplotlib
-    uv run pyright --verbose --createstub matplotlib.pyplot
-    uv run pyright --verbose --createstub multipledispatch
-    uv run pyright --verbose --createstub attr
+    uv run safety scan
 
 # Typecheck the code using pyright & mypy.
 typecheck:
+    uv run ty check --color never .
     uv run pyright {{ files }}
     uv run -m mypy --config-file pyproject.toml {{ files }}
 
 # Run tests.
 test flags="-v --cov=distribution_algebra":
     uv run pytest tests {{ flags }}
+    uv run tox run
 
 # Lint the files.
 lint:
